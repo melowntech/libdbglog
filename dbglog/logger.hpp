@@ -96,6 +96,26 @@ public:
         mask_ = ~mask;
     }
 
+    unsigned int get_mask() const {
+        return ~mask_;
+    }
+
+    std::string get_mask_string() const {
+        unsigned int m(mask_);
+        if (level::none == m) {
+            return "NONE";
+        } else if (level::all == m) {
+            return "ALL";
+        }
+
+        return std::string
+            (detail::mask2string(m, level::debug)
+             + detail::mask2string(m, level::info1)
+             + detail::mask2string(m, level::warn1)
+             + detail::mask2string(m, level::err1)
+             + detail::mask2string(m, level::fatal));
+    }
+
 private:
     bool open_file(const std::string &filename) {
         class file_closer {

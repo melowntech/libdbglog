@@ -20,6 +20,16 @@ namespace dbglog {
         return detail::deflog.set_mask(mask);
     }
 
+    inline unsigned int get_mask()
+    {
+        return detail::deflog.get_mask();
+    }
+
+    inline std::string get_mask_string()
+    {
+        return detail::deflog.get_mask_string();
+    }
+
     inline void log_thread(bool value = true)
     {
         return detail::deflog.log_thread(value);

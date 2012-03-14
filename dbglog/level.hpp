@@ -5,7 +5,8 @@ namespace dbglog {
 
 enum level {
     all =        0xfffffu
-    , debug =      0x0000fu
+    , none =     0x00000u
+    , debug =    0x0000fu
 
     , info1 =    0x000f0u
     , info2 =    0x00070u
