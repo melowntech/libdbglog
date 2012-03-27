@@ -4,6 +4,7 @@
 #include <dbglog/logger.hpp>
 #include <dbglog/stream.hpp>
 #include <dbglog/config.hpp>
+#include <dbglog/mask.hpp>
 
 namespace dbglog {
     inline module make_module() {
@@ -15,9 +16,14 @@ namespace dbglog {
         return module(name, detail::deflog);
     }
 
-    inline void mask(unsigned int mask)
+    inline void set_mask(unsigned int mask)
     {
         return detail::deflog.set_mask(mask);
+    }
+
+    inline void set_mask(const mask &m)
+    {
+        return detail::deflog.set_mask(m);
     }
 
     inline unsigned int get_mask()

@@ -43,7 +43,7 @@ inline const char* level2string(dbglog::level l)
 inline std::string mask2string(unsigned int mask, dbglog::level l)
 {
     switch (mask & l) {
-    case debug: return "DD";
+    case debug: return "D";
 
     case info1: return "I1";
     case info2: return "I2";
@@ -59,8 +59,6 @@ inline std::string mask2string(unsigned int mask, dbglog::level l)
     case err2: return "E2";
     case err3: return "E3";
     case err4: return "E4";
-
-    case fatal: return "FF";
 
     default: return "";
     }

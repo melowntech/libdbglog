@@ -1,5 +1,6 @@
 set(dbglog_SOURCES
     dbglog.cpp
+    mask.cpp
 )
 
 # This magic either creates (static) library or assigns all sources to variable

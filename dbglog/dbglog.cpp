@@ -10,7 +10,7 @@ namespace detail {
 boost::thread_specific_ptr<std::string> thread_id::holder_;
 std::atomic_uint_fast64_t thread_id::generator_(0);
 
-logger deflog(info3 | warn2 | err2 | fatal);
+logger deflog(default_);
 
 } // namespace detail
 

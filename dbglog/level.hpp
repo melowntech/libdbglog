@@ -6,6 +6,7 @@ namespace dbglog {
 enum level {
     all =        0xfffffu
     , none =     0x00000u
+
     , debug =    0x0000fu
 
     , info1 =    0x000f0u
@@ -24,6 +25,8 @@ enum level {
     , err4 =     0x01000u
 
     , fatal =    0xf0000u
+
+    , default_ =  info3 | warn2 | err2
 };
 
 } // namespace dbglog

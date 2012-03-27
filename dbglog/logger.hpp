@@ -3,6 +3,7 @@
 
 #include <dbglog/level.hpp>
 #include <dbglog/location.hpp>
+#include <dbglog/mask.hpp>
 #include <dbglog/detail/log_helpers.hpp>
 
 #include <string>
@@ -59,7 +60,7 @@ public:
     }
 
     bool check_level(level l) const {
-        return !(mask_ & l);
+        return !(mask_ & l) || (l == fatal);
     }
 
     void log_thread(bool value = true) {
@@ -92,8 +93,12 @@ public:
         return true;
     }
 
-    void set_mask(unsigned int mask) {
-        mask_ = ~mask;
+    void set_mask(const mask &m) {
+        mask_ = ~m.get();
+    }
+
+    void set_mask(unsigned int m) {
+        mask_ = ~m;
     }
 
     unsigned int get_mask() const {
@@ -101,19 +106,7 @@ public:
     }
 
     std::string get_mask_string() const {
-        unsigned int m(mask_);
-        if (level::none == m) {
-            return "NONE";
-        } else if (level::all == m) {
-            return "ALL";
-        }
-
-        return std::string
-            (detail::mask2string(m, level::debug)
-             + detail::mask2string(m, level::info1)
-             + detail::mask2string(m, level::warn1)
-             + detail::mask2string(m, level::err1)
-             + detail::mask2string(m, level::fatal));
+        return mask(~mask_).as_string();
     }
 
 private:
