@@ -8,7 +8,7 @@ namespace dbglog {
 
 class mask {
 public:
-    mask(unsigned int m) : mask_(m) {}
+    mask(unsigned int m = default_) : mask_(m) {}
 
     mask(const std::string &m) { from_string(m); }
 
