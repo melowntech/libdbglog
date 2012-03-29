@@ -8,6 +8,7 @@
 
 #include <string>
 #include <iostream>
+#include <atomic>
 
 #include <boost/noncopyable.hpp>
 #include <boost/thread.hpp>
@@ -60,6 +61,15 @@ public:
     }
 
     bool check_level(level l) const {
+        return !(mask_ & l) || (l == fatal);
+    }
+
+    bool check_level(level l, std::atomic<bool> &guard) const {
+        bool exp_val = false;
+        bool new_val = true;
+        if (!std::atomic_compare_exchange_strong(&guard, &exp_val, new_val)) {
+            return false;
+        }
         return !(mask_ & l) || (l == fatal);
     }
 
@@ -220,6 +230,10 @@ public:
 
     bool check_level(level l) const {
         return sink_->check_level(l);
+    }
+
+    bool check_level(level l, std::atomic<bool> &guard) const {
+        return sink_->check_level(l, guard);
     }
 
     void log(level l, const std::string &message

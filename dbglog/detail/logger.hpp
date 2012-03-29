@@ -8,6 +8,13 @@ namespace dbglog { namespace detail {
 extern logger deflog;
 
 template <typename SinkType>
+inline bool check_level(level l, const SinkType &sink
+                        , std::atomic<bool> &once_guard)
+{
+    return sink.check_level(l, once_guard);
+}
+
+template <typename SinkType>
 inline bool check_level(level l, const SinkType &sink)
 {
     return sink.check_level(l);
@@ -16,6 +23,11 @@ inline bool check_level(level l, const SinkType &sink)
 inline bool check_level(level l)
 {
     return detail::deflog.check_level(l);
+}
+
+inline bool check_level(level l, std::atomic<bool> &once_guard)
+{
+    return detail::deflog.check_level(l, once_guard);
 }
 
 } } // namespace dbglog::detail

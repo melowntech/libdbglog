@@ -66,6 +66,32 @@ private:
 #define DBGLOG_EXPAND_7(a, b, c, d, e, f, g) LOG_TAKES_EITHER_1_OR_2_ARGUMENTS_NOT_6
 #define DBGLOG_EXPAND_8(a, b, c, d, e, f, g, h) LOG_TAKES_EITHER_1_OR_2_ARGUMENTS_NOT_7
 
+#define DBGLOG_ADD_LINE_NO(x) DBGLOG_ADD_LINE_NO1(x,__LINE__)
+#define DBGLOG_ADD_LINE_NO1(x, y) DBGLOG_ADD_LINE_NO2(x, y)
+#define DBGLOG_ADD_LINE_NO2(x, y) x##y
+
+#define DBGLOG_ONCE_EXPAND_1(LEVEL)                                     \
+    static std::atomic<bool> DBGLOG_ADD_LINE_NO(dbglog_once_guard_)(false); \
+    if (!dbglog::detail::check_level                                    \
+        (dbglog::LEVEL, dbglog::detail::deflog                          \
+         , DBGLOG_ADD_LINE_NO(dbglog_once_guard_)));                    \
+    else dbglog::stream<dbglog::logger>                                 \
+             (DBGLOG_PLACE, dbglog::LEVEL, dbglog::detail::deflog)
+
+#define DBGLOG_ONCE_EXPAND_2(LEVEL, SINK) \
+    static std::atomic<bool> DBGLOG_ADD_LINE_NO(dbglog_once_guard_)(false); \
+    if (!dbglog::detail::check_level                                    \
+        (dbglog::LEVEL, dbglog::detail::deflog                          \
+         , DBGLOG_ADD_LINE_NO(dbglog_once_guard_)));                    \
+    else dbglog::stream<decltype(SINK)>(DBGLOG_PLACE, dbglog::LEVEL, SINK)
+
+#define DBGLOG_ONCE_EXPAND_3(a, b, c) LOG_TAKES_EITHER_1_OR_2_ARGUMENTS_NOT_3
+#define DBGLOG_ONCE_EXPAND_4(a, b, c, d) LOG_TAKES_EITHER_1_OR_2_ARGUMENTS_NOT_4
+#define DBGLOG_ONCE_EXPAND_5(a, b, c, d, e) LOG_TAKES_EITHER_1_OR_2_ARGUMENTS_NOT_4
+#define DBGLOG_ONCE_EXPAND_6(a, b, c, d, e, f) LOG_TAKES_EITHER_1_OR_2_ARGUMENTS_NOT_5
+#define DBGLOG_ONCE_EXPAND_7(a, b, c, d, e, f, g) LOG_TAKES_EITHER_1_OR_2_ARGUMENTS_NOT_6
+#define DBGLOG_ONCE_EXPAND_8(a, b, c, d, e, f, g, h) LOG_TAKES_EITHER_1_OR_2_ARGUMENTS_NOT_7
+
 #define DBGLOG_PLACE dbglog::location \
     (__FILE__, (const char*)__FUNCTION__, __LINE__)
 

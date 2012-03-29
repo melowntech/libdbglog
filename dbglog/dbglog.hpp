@@ -82,5 +82,8 @@ namespace dbglog {
 #define LOG(...) \
     DBGLOG_CONCATENATE(DBGLOG_EXPAND_, DBGLOG_NARG(__VA_ARGS__)(__VA_ARGS__))
 
+#define LOGONCE(...) \
+    DBGLOG_CONCATENATE(DBGLOG_ONCE_EXPAND_, DBGLOG_NARG(__VA_ARGS__)(__VA_ARGS__))
+
 #endif // shared_dbglog_dbglog_hpp_included_
 
