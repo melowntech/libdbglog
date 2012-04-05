@@ -15,4 +15,6 @@ if(Add_Subdirectory_And_Grab_Sources_Var)
     PARENT_SCOPE)
 else()
   add_library(dbglog STATIC ${dbglog_SOURCES})
+  set_target_properties(dbglog PROPERTIES ARCHIVE_OUTPUT_DIRECTORY
+    ${CMAKE_SOURCE_DIR}/lib)
 endif()
