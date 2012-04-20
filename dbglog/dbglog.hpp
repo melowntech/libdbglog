@@ -80,10 +80,23 @@ namespace dbglog {
  *  };
  */
 #define LOG(...) \
-    DBGLOG_CONCATENATE(DBGLOG_EXPAND_, DBGLOG_NARG(__VA_ARGS__)(__VA_ARGS__))
+    DBGLOG_CONCATENATE(DBGLOG_EXPAND_, DBGLOG_NARG(__VA_ARGS__) \
+                       (__VA_ARGS__))
 
+/** One shot log facility.
+ *  Same as LOG but logs almost once during program lifetime.
+ */
 #define LOGONCE(...) \
-    DBGLOG_CONCATENATE(DBGLOG_ONCE_EXPAND_, DBGLOG_NARG(__VA_ARGS__)(__VA_ARGS__))
+    DBGLOG_CONCATENATE(DBGLOG_ONCE_EXPAND_, DBGLOG_NARG(__VA_ARGS__) \
+                       (__VA_ARGS__))
+
+/** Log'n'throw convenience logger.
+ *
+ *  Same as LOG but throws exception of given type (2nd or 3rd) initialized with
+ *  log line (only logged content, no time, location etc. is appended)
+ */
+#define LOGTHROW(...) \
+    DBGLOG_CONCATENATE(DBGLOG_THROW_EXPAND_, DBGLOG_NARG(__VA_ARGS__) \
+                       (__VA_ARGS__))
 
 #endif // shared_dbglog_dbglog_hpp_included_
-
