@@ -36,18 +36,18 @@ public:
 
     ~logger() {}
 
-    void log(level l, const std::string &message
+    bool log(level l, const std::string &message
              , const location &loc)
     {
-        prefix_log(l, empty_, message, loc);
+        return prefix_log(l, empty_, message, loc);
     }
 
-    void prefix_log(level l, const std::string &prefix
+    bool prefix_log(level l, const std::string &prefix
                     , const std::string &message
                     , const location &loc)
     {
         if (!check_level(l)) {
-            return;
+            return false;
         }
 
         std::ostringstream os;
@@ -58,6 +58,7 @@ public:
         os << message << ' ' << loc << '\n';
 
         write(os.str());
+        return true;
     }
 
     bool check_level(level l) const {
@@ -237,10 +238,10 @@ public:
         return sink_->check_level(l, guard);
     }
 
-    void log(level l, const std::string &message
+    bool log(level l, const std::string &message
              , const location &loc)
     {
-        sink_->prefix_log(l, log_name_, message, loc);
+        return sink_->prefix_log(l, log_name_, message, loc);
     }
 
 private:
