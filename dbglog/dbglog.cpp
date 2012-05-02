@@ -19,9 +19,9 @@ void thread_id(const std::string &id)
     detail::thread_id::set(id);
 }
 
-void thread_id()
+std::string thread_id()
 {
-    detail::thread_id::get();
+    return detail::thread_id::get();
 }
 
 } // namespace dbglog

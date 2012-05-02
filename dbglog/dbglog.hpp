@@ -58,7 +58,7 @@ namespace dbglog {
 
     void thread_id(const std::string &id);
 
-    void thread_id();
+    std::string thread_id();
 
 } // namespace dbglog
 

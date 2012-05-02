@@ -165,11 +165,11 @@ private:
         if (show_pid_) {
             os << " [" << getpid();
             if (show_threads_) {
-                os << '/' << detail::thread_id::get();
+                os << '(' << detail::thread_id::get() << ')';
             }
             os << ']';
         } else if (show_threads_) {
-            os << " [/" << detail::thread_id::get() << ']';
+            os << " [(" << detail::thread_id::get() << ")]";
         }
 
         os << ": ";
