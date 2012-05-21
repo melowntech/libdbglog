@@ -26,6 +26,11 @@ namespace dbglog {
         return detail::deflog.set_mask(m);
     }
 
+    inline void set_mask(const std::string &m)
+    {
+        return detail::deflog.set_mask(mask(m));
+    }
+
     inline unsigned int get_mask()
     {
         return detail::deflog.get_mask();
