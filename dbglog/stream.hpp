@@ -139,7 +139,7 @@ private:
 #define DBGLOG_THROW_EXPAND_8(a, b, c, d, e, f, g, h) THROW_TAKES_EITHER_1_OR_2_ARGUMENTS_NOT_8
 
 #define DBGLOG_PLACE dbglog::location \
-    (__FILE__, (const char*)__FUNCTION__, __LINE__)
+    (__FILE__, (const char*)__FUNCTION__, __LINE__, true)
 
 #endif // shared_dbglog_stream_hpp_included_
 

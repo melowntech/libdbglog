@@ -2,6 +2,7 @@
 #define shared_dbglog_location_hpp_included_
 
 #include <cstddef>
+#include <cstring>
 
 namespace dbglog {
 
@@ -10,9 +11,16 @@ struct location {
     const char *func;
     size_t line;
 
-    location(const char *file, const char *func, size_t line)
-        : file(file), func(func), line(line)
+    location(const char *file, const char *func, size_t line
+             , bool trimFile = false)
+        : file(trimFile ? trim(file) : file), func(func), line(line)
     {}
+
+private:
+    static const char *trim(const char *file) {
+        const char *end = strrchr(file, '/');
+        return end ? end + 1 : file;
+    }
 };
 
 } // namespace dbglog
