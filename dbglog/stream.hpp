@@ -50,6 +50,7 @@ public:
 
     ~exc_stream() {
         sink_.log(l_, os_.str(), loc_);
+        os_ << " @" << loc_;
         if (!std::uncaught_exception()) {
             throw ExcType(os_.str());
         }
