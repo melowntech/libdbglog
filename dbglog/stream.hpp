@@ -129,9 +129,8 @@ private:
     (DBGLOG_PLACE, dbglog::LEVEL, dbglog::detail::deflog)
 
 #define DBGLOG_THROW_EXPAND_3(LEVEL, SINK, EXCTYPE)                     \
-    if (!dbglog::detail::check_level(dbglog::LEVEL, SINK));             \
-    else dbglog::exc_stream<decltype(SINK), EXCTYPE>                    \
-             (DBGLOG_PLACE, dbglog::LEVEL, SINK)
+    dbglog::exc_stream<decltype(SINK), EXCTYPE>                    \
+    (DBGLOG_PLACE, dbglog::LEVEL, SINK)
 
 #define DBGLOG_THROW_EXPAND_4(a, b, c, d) THROW_TAKES_EITHER_1_OR_2_ARGUMENTS_NOT_4
 #define DBGLOG_THROW_EXPAND_5(a, b, c, d, e) THROW_TAKES_EITHER_1_OR_2_ARGUMENTS_NOT_5
