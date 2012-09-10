@@ -4,6 +4,7 @@
 #include <dbglog/level.hpp>
 #include <dbglog/location.hpp>
 
+#include <errno.h>
 #include <time.h>
 #include <sys/time.h>
 
@@ -11,6 +12,16 @@
 #include <boost/lexical_cast.hpp>
 
 #include <atomic>
+
+// implement TEMP_FAILURE_RETRY if not present on platform (via C++11 lambda)
+#ifndef TEMP_FAILURE_RETRY
+#define TEMP_FAILURE_RETRY(operation) [&]()->int {       \
+        for (;;) { int e(operation);                     \
+            if ((-1 == e) && (EINTR == errno)) continue; \
+            return e;                                    \
+        }                                                \
+    }()
+#endif
 
 namespace dbglog { namespace detail {
 
