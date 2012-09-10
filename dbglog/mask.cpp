@@ -40,17 +40,17 @@ std::string mask2string(unsigned int mask, dbglog::level l)
 std::string mask::as_string() const
 {
     unsigned int m(mask_);
-    if (level::none == m) {
+    if (dbglog::none == m) {
         return "NONE";
-    } else if (level::all == m) {
+    } else if (dbglog::all == m) {
             return "ALL";
     }
 
     return std::string
-        (detail::mask2string(m, level::debug)
-         + detail::mask2string(m, level::info1)
-         + detail::mask2string(m, level::warn1)
-         + detail::mask2string(m, level::err1));
+        (detail::mask2string(m, dbglog::debug)
+         + detail::mask2string(m, dbglog::info1)
+         + detail::mask2string(m, dbglog::warn1)
+         + detail::mask2string(m, dbglog::err1));
 }
 
 void mask::from_string(const std::string &str)
