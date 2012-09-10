@@ -95,8 +95,8 @@ void mask::from_string(const std::string &str)
                      | warn1 | warn2 | warn3 | warn4
                      | err1 | err2 | err3 | err4));
 
-    auto first(str.begin());
-    auto last(str.end());
+    std::string::const_iterator first(str.begin());
+    std::string::const_iterator last(str.end());
     if (!parse(first, last, grammar) || (first != last)) {
         throw std::runtime_error("Bad mask syntax.");
     }
