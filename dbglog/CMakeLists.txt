@@ -3,18 +3,11 @@ set(dbglog_SOURCES
     mask.cpp
 )
 
-# This magic either creates (static) library or assigns all sources to variable
-# passed in ${Add_Subdirectory_And_Grab_Sources_Var}.
-#
-# Used to fetch sources when static library is not an option (e.g. when building
-# shared library containing object files compiled from these sources,
-# (like python extension)).
-if(Add_Subdirectory_And_Grab_Sources_Var)
-  set(${Add_Subdirectory_And_Grab_Sources_Var}
-    ${${Add_Subdirectory_And_Grab_Sources_Var}};${dbglog_SOURCES}
-    PARENT_SCOPE)
-else()
-  add_library(dbglog STATIC ${dbglog_SOURCES})
-  set_target_properties(dbglog PROPERTIES ARCHIVE_OUTPUT_DIRECTORY
-    ${CMAKE_SOURCE_DIR}/lib)
+add_library(dbglog STATIC ${dbglog_SOURCES})
+set_target_properties(dbglog PROPERTIES ARCHIVE_OUTPUT_DIRECTORY
+  ${CMAKE_SOURCE_DIR}/lib)
+
+if (${CMAKE_CXX_COMPILER_ID} MATCHES Clang)
+  set_source_files_properties(mask PROPERTIES
+    COMPILE_FLAGS -std=c++98)
 endif()

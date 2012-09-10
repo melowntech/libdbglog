@@ -4,6 +4,8 @@
 #include <string>
 #include <iosfwd>
 
+#include "level.hpp"
+
 namespace dbglog {
 
 class mask {

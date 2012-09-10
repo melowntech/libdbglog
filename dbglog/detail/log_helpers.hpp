@@ -51,30 +51,6 @@ inline const char* level2string(dbglog::level l)
     }
 }
 
-inline std::string mask2string(unsigned int mask, dbglog::level l)
-{
-    switch (mask & l) {
-    case debug: return "D";
-
-    case info1: return "I1";
-    case info2: return "I2";
-    case info3: return "I3";
-    case info4: return "I4";
-
-    case warn1: return "W1";
-    case warn2: return "W2";
-    case warn3: return "W3";
-    case warn4: return "W4";
-
-    case err1: return "E1";
-    case err2: return "E2";
-    case err3: return "E3";
-    case err4: return "E4";
-
-    default: return "";
-    }
-}
-
 typedef char timebuffer[50];
 
 inline char* format_time(timebuffer &b)
