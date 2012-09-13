@@ -9,6 +9,6 @@ set_target_properties(dbglog PROPERTIES ARCHIVE_OUTPUT_DIRECTORY
 
 if (${CMAKE_CXX_COMPILER_ID} MATCHES Clang)
   # Boost.Spirit is non-compilable on Clang in C++11 :(
-  set_source_files_properties(mask PROPERTIES
+  set_source_files_properties(mask.cpp PROPERTIES
     COMPILE_FLAGS -std=c++98)
 endif()
