@@ -1,3 +1,7 @@
+depends(dbglog Boost_THREAD)
+
+set(MODULE_DBGLOG_FOUND TRUE PARENT_SCOPE)
+
 set(dbglog_SOURCES
     dbglog.cpp
     mask.cpp
