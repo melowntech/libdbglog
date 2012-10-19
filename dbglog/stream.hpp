@@ -132,11 +132,11 @@ private:
     dbglog::exc_stream<decltype(SINK), EXCTYPE>                    \
     (DBGLOG_PLACE, dbglog::LEVEL, SINK)
 
-#define DBGLOG_THROW_EXPAND_4(a, b, c, d) THROW_TAKES_EITHER_1_OR_2_ARGUMENTS_NOT_4
-#define DBGLOG_THROW_EXPAND_5(a, b, c, d, e) THROW_TAKES_EITHER_1_OR_2_ARGUMENTS_NOT_5
-#define DBGLOG_THROW_EXPAND_6(a, b, c, d, e, f) THROW_TAKES_EITHER_1_OR_2_ARGUMENTS_NOT_6
-#define DBGLOG_THROW_EXPAND_7(a, b, c, d, e, f, g) THROW_TAKES_EITHER_1_OR_2_ARGUMENTS_NOT_7
-#define DBGLOG_THROW_EXPAND_8(a, b, c, d, e, f, g, h) THROW_TAKES_EITHER_1_OR_2_ARGUMENTS_NOT_8
+#define DBGLOG_THROW_EXPAND_4(a, b, c, d) THROW_TAKES_EITHER_2_OR_3_ARGUMENTS_NOT_4
+#define DBGLOG_THROW_EXPAND_5(a, b, c, d, e) THROW_TAKES_EITHER_2_OR_3_ARGUMENTS_NOT_5
+#define DBGLOG_THROW_EXPAND_6(a, b, c, d, e, f) THROW_TAKES_EITHER_2_OR_3_ARGUMENTS_NOT_6
+#define DBGLOG_THROW_EXPAND_7(a, b, c, d, e, f, g) THROW_TAKES_EITHER_2_OR_3_ARGUMENTS_NOT_7
+#define DBGLOG_THROW_EXPAND_8(a, b, c, d, e, f, g, h) THROW_TAKES_EITHER_2_OR_3_ARGUMENTS_NOT_8
 
 #define DBGLOG_PLACE dbglog::location \
     (__FILE__, (const char*)__FUNCTION__, __LINE__, true)
