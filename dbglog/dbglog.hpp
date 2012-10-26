@@ -7,6 +7,9 @@
 #include <dbglog/mask.hpp>
 
 namespace dbglog {
+    const unsigned short millis(3);
+    const unsigned short micros(6);
+
     inline module make_module() {
         return module(detail::deflog);
     }
@@ -64,6 +67,14 @@ namespace dbglog {
     void thread_id(const std::string &id);
 
     std::string thread_id();
+
+    inline void log_time_precision(unsigned short precision) {
+        detail::deflog.log_time_precision(precision);
+    }
+
+    inline unsigned short log_time_precision() {
+        return detail::deflog.log_time_precision();
+    }
 
 } // namespace dbglog
 

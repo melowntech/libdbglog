@@ -120,6 +120,14 @@ public:
         return mask(~mask_).as_string();
     }
 
+    unsigned short log_time_precision() const {
+        return time_precision_;
+    }
+
+    void log_time_precision(unsigned short time_precision) {
+        time_precision_ = time_precision;
+    }
+
 private:
     bool open_file(const std::string &filename) {
         class file_closer {
@@ -159,7 +167,7 @@ private:
 
     void line_prefix(std::ostream &os, level l) {
         detail::timebuffer now;
-        os << detail::format_time(now) << ' '
+        os << detail::format_time(now, time_precision_) << ' '
            << detail::level2string(l);
 
         if (show_pid_) {
@@ -199,6 +207,7 @@ private:
     unsigned int mask_; //!< Log mask
     bool show_threads_; //!< Output thread ID (after PID)
     bool show_pid_; //!< Output PID of current process
+    unsigned short time_precision_;
 
     bool use_console_; //!< Log to console (stderr)
 

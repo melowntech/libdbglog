@@ -51,15 +51,50 @@ inline const char* level2string(dbglog::level l)
     }
 }
 
-typedef char timebuffer[50];
+typedef char timebuffer[64];
 
-inline char* format_time(timebuffer &b)
+inline char* format_time(timebuffer &b, unsigned short precision = 0)
 {
     timeval now;
     gettimeofday(&now, 0x0);
     tm now_bd;
     localtime_r(&now.tv_sec, &now_bd);
-    strftime(b, sizeof(b) - 1, "%Y-%m-%d %T", &now_bd);
+    auto end(b + strftime(b, sizeof(b) - 1, "%Y-%m-%d %T", &now_bd));
+
+    // append
+    switch (precision) {
+    case 6:
+        sprintf(end, ".%06u", static_cast<unsigned int>(now.tv_usec));
+        break;
+
+    case 5:
+        sprintf(end, ".%05u", static_cast<unsigned int>(now.tv_usec / 10));
+        break;
+
+    case 4:
+        sprintf(end, ".%04u"
+                , static_cast<unsigned int>(now.tv_usec / 100));
+        break;
+
+    case 3:
+        sprintf(end, ".%03u"
+                , static_cast<unsigned int>(now.tv_usec / 1000));
+        break;
+
+    case 2:
+        sprintf(end, ".%02u"
+                , static_cast<unsigned int>(now.tv_usec / 10000));
+        break;
+
+    case 1:
+        sprintf(end, ".%01u"
+                , static_cast<unsigned int>(now.tv_usec / 100000));
+        break;
+
+    default:
+        break;
+    }
+
     return b;
 }
 
