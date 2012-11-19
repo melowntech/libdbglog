@@ -1,4 +1,4 @@
-define_module(LIBRARY dbglog DEPENDS Boost_THREAD)
+define_module(LIBRARY dbglog DEPENDS Boost_THREAD Boost_SYSTEM)
 
 set(dbglog_SOURCES
     dbglog.cpp
