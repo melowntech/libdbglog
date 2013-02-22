@@ -25,7 +25,7 @@ class logger : boost::noncopyable {
 public:
     logger(unsigned int mask)
         : mask_(~mask), show_threads_(true), show_pid_(true)
-        , use_console_(true), use_file_(false)
+        , time_precision_(0), use_console_(true), use_file_(false)
         , fd_(::open("/dev/null", O_WRONLY))
     {
         if (-1 == fd_) {
@@ -34,7 +34,13 @@ public:
         }
     }
 
-    ~logger() {}
+    ~logger() {
+        if (-1 == fd_) {
+            return;
+        }
+
+        TEMP_FAILURE_RETRY(::close(fd_));
+    }
 
     bool log(level l, const std::string &message
              , const location &loc)
