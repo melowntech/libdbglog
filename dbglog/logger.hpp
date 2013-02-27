@@ -134,6 +134,16 @@ public:
         time_precision_ = time_precision;
     }
 
+    bool tie(int fd) {
+        // TODO: add untie function + remember fd to be re-tied on file reopen
+        if (-1 == dup2(fd_, fd)) {
+            std::cerr << "Error dupplicating fd(" << fd_ << ") to fd("
+                      << fd << "): " << errno << std::endl;
+            return false;
+        }
+        return true;
+    }
+
 private:
     bool open_file(const std::string &filename) {
         class file_closer {
