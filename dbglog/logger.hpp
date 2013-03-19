@@ -1,11 +1,6 @@
 #ifndef shared_dbglog_logger_hpp_included_
 #define shared_dbglog_logger_hpp_included_
 
-#include <dbglog/level.hpp>
-#include <dbglog/location.hpp>
-#include <dbglog/mask.hpp>
-#include <dbglog/detail/log_helpers.hpp>
-
 #include <string>
 #include <iostream>
 #include <atomic>
@@ -17,7 +12,14 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include <errno.h>
+#include <cerrno>
+
+#include "level.hpp"
+#include "location.hpp"
+#include "mask.hpp"
+#include "detail/log_helpers.hpp"
+
+#include "sink.hpp"
 
 namespace dbglog {
 
@@ -42,6 +44,11 @@ public:
         TEMP_FAILURE_RETRY(::close(fd_));
     }
 
+    // NB: not threads safe; this must be done before any new thread is created!
+    void addSink(const Sink::pointer &sink) {
+        sinks_.push_back(sink);
+    }
+
     bool log(level l, const std::string &message
              , const location &loc)
     {
@@ -63,21 +70,39 @@ public:
         }
         os << message << ' ' << loc << '\n';
 
-        write(os.str());
+        const auto line(os.str());
+
+        if (check_level_(l)) {
+            write(line);
+        }
+
+        for (auto &sink : sinks_) {
+            if (sink->check_level(l)) { sink->write(line); }
+        }
+
         return true;
     }
 
-    bool check_level(level l) const {
-        return !(mask_ & l) || (l == fatal);
+    inline bool check_level(level l) const {
+        if (!(mask_ & l) || (l == fatal)) {
+            return true;
+        }
+
+        for (const auto &sink : sinks_) {
+            if (sink->check_level(l)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    bool check_level(level l, std::atomic<bool> &guard) const {
+    inline bool check_level(level l, std::atomic<bool> &guard) const {
         bool exp_val = false;
         bool new_val = true;
         if (!std::atomic_compare_exchange_strong(&guard, &exp_val, new_val)) {
             return false;
         }
-        return !(mask_ & l) || (l == fatal);
+        return check_level(l);
     }
 
     void log_thread(bool value = true) {
@@ -145,6 +170,10 @@ public:
     }
 
 private:
+    inline bool check_level_(level l) const {
+        return !(mask_ & l) || (l == fatal);
+    }
+
     bool open_file(const std::string &filename) {
         class file_closer {
         public:
@@ -232,6 +261,8 @@ private:
     int fd_; //!< fd associated with output file
 
     boost::mutex m_;
+
+    Sink::list sinks_;
 
     static const std::string empty_;
 };

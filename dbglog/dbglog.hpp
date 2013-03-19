@@ -76,6 +76,9 @@ namespace dbglog {
         return detail::deflog.log_time_precision();
     }
 
+    inline void add_sink(const Sink::pointer &sink) {
+        detail::deflog.addSink(sink);
+    }
 } // namespace dbglog
 
 /** Main log facility.
