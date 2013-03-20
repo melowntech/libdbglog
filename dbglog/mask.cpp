@@ -104,4 +104,16 @@ void mask::from_string(const std::string &str)
     mask_ = m;
 }
 
+mask max(const mask &l, const mask &r)
+{
+    // maximum of both masks -> negative minimum of negative masks
+    return ~(~l.get() | ~r.get());
+}
+
+mask min(const mask &l, const mask &r)
+{
+    // minimum of both masks -> bitwise-OR of both masks
+    return l.get() | r.get();
+}
+
 } // namespace dbglog

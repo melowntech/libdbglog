@@ -41,6 +41,10 @@ private:
     unsigned int mask_;
 };
 
+mask max(const mask &l, const mask &r);
+
+mask min(const mask &l, const mask &r);
+
 } // namespace dbglog
 
 #endif // shared_dbglog_mask_hpp_included_

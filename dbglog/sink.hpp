@@ -17,8 +17,8 @@ public:
 
     typedef std::vector<pointer> list;
 
-    Sink(unsigned int mask, const std::string &name)
-        : mask_(~mask), name_(name)
+    Sink(const mask &mask, const std::string &name)
+        : mask_(~mask.get()), name_(name)
     {}
 
     virtual ~Sink() {}
