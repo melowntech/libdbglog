@@ -19,34 +19,25 @@
 #include "mask.hpp"
 #include "detail/log_helpers.hpp"
 
+#include "logfile.hpp"
 #include "sink.hpp"
 
 namespace dbglog {
 
-class logger : boost::noncopyable {
+class logger : public logger_file {
 public:
     logger(unsigned int mask)
-        : mask_(~mask), show_threads_(true), show_pid_(true)
-        , time_precision_(0), use_console_(true), use_file_(false)
-        , fd_(::open("/dev/null", O_WRONLY))
+        : logger_file(), mask_(~mask), show_threads_(true), show_pid_(true)
+        , time_precision_(0), use_console_(true)
     {
-        if (-1 == fd_) {
-            throw std::runtime_error
-                ("Cannot open /dev/null for log file. Fatal");
-        }
     }
 
-    ~logger() {
-        if (-1 == fd_) {
-            return;
-        }
-
-        TEMP_FAILURE_RETRY(::close(fd_));
-    }
+    ~logger() {}
 
     // NB: not threads safe; this must be done before any new thread is created!
     void addSink(const Sink::pointer &sink) {
         sinks_.push_back(sink);
+        if (sink->shared_mask()) { sink->set_mask(get_mask()); }
     }
 
     bool log(level l, const std::string &message
@@ -117,30 +108,19 @@ public:
         use_console_ = value;
     }
 
-    bool log_file(const std::string &filename) {
-        boost::mutex::scoped_lock guard(m_);
-        if (filename.empty()) {
-            if (!open_file("/dev/null")) {
-                return false;
-            }
-            use_file_ = false;
-        } else {
-            if (!open_file(filename)) {
-                return false;
-            }
-            use_file_ = true;
-        }
-
-        filename_ = filename;
-        return true;
-    }
-
     void set_mask(const mask &m) {
         mask_ = ~m.get();
+        for (const auto &sink : sinks_) {
+            if (sink->shared_mask()) { sink->set_mask(m); }
+        }
     }
 
     void set_mask(unsigned int m) {
         mask_ = ~m;
+
+        for (const auto &sink : sinks_) {
+            if (sink->shared_mask()) { sink->set_mask(m); }
+        }
     }
 
     unsigned int get_mask() const {
@@ -159,55 +139,9 @@ public:
         time_precision_ = time_precision;
     }
 
-    bool tie(int fd) {
-        // TODO: add untie function + remember fd to be re-tied on file reopen
-        if (-1 == dup2(fd_, fd)) {
-            std::cerr << "Error dupplicating fd(" << fd_ << ") to fd("
-                      << fd << "): " << errno << std::endl;
-            return false;
-        }
-        return true;
-    }
-
 private:
     inline bool check_level_(level l) const {
         return !(mask_ & l) || (l == fatal);
-    }
-
-    bool open_file(const std::string &filename) {
-        class file_closer {
-        public:
-            file_closer(int fd) : fd_(fd) {}
-            ~file_closer() {
-                if (-1 == fd_) {
-                    return;
-                }
-
-                TEMP_FAILURE_RETRY(::close(fd_));
-            }
-
-            operator int() {
-                return fd_;
-            }
-
-        private:
-            int fd_;
-        } f(::open(filename.c_str(), O_WRONLY | O_CREAT | O_APPEND
-                   , S_IRUSR | S_IWUSR));
-
-        if (-1 == f) {
-            std::cerr << "Error opening log file <" << filename
-                      << ">: " << errno << std::endl;
-            return false;
-        }
-
-        if (-1 == dup2(f, fd_)) {
-            std::cerr << "Error dupplicating fd(" << f << ") to fd("
-                      << fd_ << "): " << errno << std::endl;
-            return false;
-        }
-
-        return true;
     }
 
     void line_prefix(std::ostream &os, level l) {
@@ -233,20 +167,7 @@ private:
             std::cerr.write(line.data(), line.size());
         }
 
-        if (use_file_) {
-            const char *data(line.data());
-            size_t left(line.size());
-            while (left) {
-                ssize_t written(TEMP_FAILURE_RETRY(::write(fd_, data, left)));
-                if (-1 == written) {
-                    std::cerr << "Error writing to log file: "
-                              << errno << std::endl;
-                    return;
-                }
-                left -= written;
-                data += written;
-            }
-        }
+        logger_file::write_file(line);
     }
 
     unsigned int mask_; //!< Log mask
@@ -255,12 +176,6 @@ private:
     unsigned short time_precision_;
 
     bool use_console_; //!< Log to console (stderr)
-
-    bool use_file_; //!< Log to configured file
-    std::string filename_; //!< log file filename
-    int fd_; //!< fd associated with output file
-
-    boost::mutex m_;
 
     Sink::list sinks_;
 

@@ -18,7 +18,7 @@ public:
     typedef std::vector<pointer> list;
 
     Sink(const mask &mask, const std::string &name)
-        : mask_(~mask.get()), name_(name)
+        : shared_mask_(false), mask_(~mask.get()), name_(name)
     {}
 
     virtual ~Sink() {}
@@ -31,7 +31,22 @@ public:
 
     const std::string& name() const { return name_; }
 
+    void set_mask(const mask &m) {  mask_ = ~m.get();  }
+
+    void set_mask(unsigned int m) { mask_ = ~m; }
+
+    unsigned int get_mask() const { return ~mask_; }
+
+    std::string get_mask_string() const {
+        return mask(~mask_).as_string();
+    }
+
+    bool shared_mask() const { return shared_mask_; }
+
+    void shared_mask(bool v) { shared_mask_ = v; }
+
 private:
+    bool shared_mask_;
     unsigned int mask_;
     const std::string name_;
 };
