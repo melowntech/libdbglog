@@ -97,7 +97,7 @@ private:
                     return;
                 }
 
-                TEMP_FAILURE_RETRY(::close(fd_));
+                ::close(fd_);
             }
 
             operator int() {
