@@ -31,7 +31,7 @@ public:
             return;
         }
 
-        TEMP_FAILURE_RETRY(::close(fd_));
+        ::close(fd_);
     }
 
     bool log_file(const std::string &filename) {
