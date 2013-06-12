@@ -6,8 +6,7 @@ set(dbglog_SOURCES
 )
 
 add_library(dbglog STATIC ${dbglog_SOURCES})
-set_target_properties(dbglog PROPERTIES ARCHIVE_OUTPUT_DIRECTORY
-  ${CMAKE_SOURCE_DIR}/lib)
+buildsys_library(dbglog)
 
 target_link_libraries(dbglog ${MODULE_LIBRARIES})
 
