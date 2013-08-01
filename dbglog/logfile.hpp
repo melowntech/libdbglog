@@ -1,6 +1,7 @@
 #ifndef shared_dbglog_logger_file_hpp_included_
 #define shared_dbglog_logger_file_hpp_included_
 
+#include <set>
 #include <string>
 #include <iostream>
 
@@ -22,7 +23,7 @@ public:
     {
         if (-1 == fd_) {
             throw std::runtime_error
-                ("Cannot open /dev/null for log file. Fatal");
+                ("Cannot open /dev/null for log file. Oops.");
         }
     }
 
@@ -32,20 +33,26 @@ public:
         }
 
         ::close(fd_);
+
+        for (auto fd : ties_) {
+            ::close(fd);
+        }
     }
 
     bool log_file(const std::string &filename) {
         boost::mutex::scoped_lock guard(m_);
         if (filename.empty()) {
-            if (!open_file("/dev/null")) {
+            if (!open_file("/dev/null", fd_)) {
                 return false;
             }
             use_file_ = false;
+            retie(); // back to /dev/null to allow log file to be closed
         } else {
-            if (!open_file(filename)) {
+            if (!open_file(filename, fd_)) {
                 return false;
             }
             use_file_ = true;
+            retie(); // point ties to freshly open log file
         }
 
         filename_ = filename;
@@ -53,12 +60,42 @@ public:
     }
 
     bool tie(int fd) {
+        boost::mutex::scoped_lock guard(m_);
+
+        // check for duplicate
+        if (ties_.find(fd) != ties_.end()) {
+            // already tied -> fine
+            return true;
+        }
+
         // TODO: add untie function + remember fd to be re-tied on file reopen
-        if (-1 == dup2(fd_, fd)) {
+        if (-1 == safeDup2(fd_, fd)) {
             std::cerr << "Error dupplicating fd(" << fd_ << ") to fd("
                       << fd << "): " << errno << std::endl;
             return false;
         }
+
+        // remember fd
+        ties_.insert(fd);
+        return true;
+    }
+
+    bool untie(int fd, const std::string &path = "/dev/null") {
+        boost::mutex::scoped_lock guard(m_);
+
+        // check for existence
+        if (ties_.find(fd) == ties_.end()) {
+            // not tied -> error
+            return false;
+        }
+
+        // point fd to something else
+        if (!open_file(path, fd)) {
+            return false;
+        }
+
+        // forget fd
+        ties_.erase(fd);
         return true;
     }
 
@@ -88,7 +125,7 @@ protected:
     bool use_file() const { return use_file_; }
 
 private:
-    bool open_file(const std::string &filename) {
+    bool open_file(const std::string &filename, int dest) {
         class file_closer {
         public:
             file_closer(int fd) : fd_(fd) {}
@@ -115,13 +152,45 @@ private:
             return false;
         }
 
-        if (-1 == dup2(f, fd_)) {
+        if (-1 == safeDup2(f, dest)) {
             std::cerr << "Error dupplicating fd(" << f << ") to fd("
-                      << fd_ << "): " << errno << std::endl;
+                      << dest << "): " << errno << std::endl;
             return false;
         }
 
         return true;
+    }
+
+    void retie() {
+        // retie all tied file descriptors
+        for (auto fd : ties_) {
+            if (-1 == safeDup2(fd_, fd)) {
+                std::cerr << "Error dupplicating fd(" << fd_ << ") to fd("
+                          << fd << "): " << errno << std::endl;
+            }
+        }
+    }
+
+    int safeDup2(int oldfd, int newfd) {
+        for (;;) {
+            int res(::dup2(oldfd, newfd));
+            if (res != -1) {
+                // OK
+                return res;
+            }
+
+            // some error
+            switch (res) {
+            case EBUSY:
+                // race condition between open and dup -> try again
+            case EINTR:
+                // interrupted -> try again
+                continue;
+            }
+
+            // fatal error
+            return res;
+        }
     }
 
     bool use_file_; //!< Log to configured file
@@ -129,6 +198,7 @@ private:
     int fd_; //!< fd associated with output file
 
     boost::mutex m_;
+    std::set<int> ties_;
 };
 
 } // namespace dbglog

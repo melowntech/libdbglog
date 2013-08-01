@@ -79,6 +79,14 @@ namespace dbglog {
     inline void add_sink(const Sink::pointer &sink) {
         detail::deflog.addSink(sink);
     }
+
+    inline bool tie(int fd) {
+        return detail::deflog.tie(fd);
+    }
+
+    inline bool untie(int fd) {
+        return detail::deflog.untie(fd);
+    }
 } // namespace dbglog
 
 /** Main log facility.

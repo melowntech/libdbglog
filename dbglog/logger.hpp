@@ -34,6 +34,11 @@ public:
 
     ~logger() {}
 
+    // for documentation purposes:
+    using logger_file::log_file;
+    using logger_file::tie;
+    using logger_file::untie;
+
     // NB: not threads safe; this must be done before any new thread is created!
     void addSink(const Sink::pointer &sink) {
         sinks_.push_back(sink);
