@@ -64,6 +64,11 @@ namespace dbglog {
         return detail::deflog.log_file(filename);
     }
 
+    inline bool log_file_owner(long uid, long gid)
+    {
+        return detail::deflog.log_file_owner(uid, gid);
+    }
+
     void thread_id(const std::string &id);
 
     std::string thread_id();

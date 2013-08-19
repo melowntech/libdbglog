@@ -99,6 +99,14 @@ public:
         return true;
     }
 
+    bool log_file_owner(uid_t owner, gid_t group) {
+        if (fd_ < 0) { return false; }
+        if (-1 == ::fchown(fd_, owner, group)) {
+            return false;
+        }
+        return true;
+    }
+
 protected:
     bool write_file(const std::string &line) {
         return write_file(line.data(), line.size());
