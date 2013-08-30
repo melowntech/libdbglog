@@ -59,7 +59,7 @@ public:
         return true;
     }
 
-    bool tie(int fd) {
+    bool tie(int fd, bool remember=true) {
         boost::mutex::scoped_lock guard(m_);
 
         // check for duplicate
@@ -76,7 +76,9 @@ public:
         }
 
         // remember fd
-        ties_.insert(fd);
+        if (remember) {
+            ties_.insert(fd);
+        }
         return true;
     }
 
