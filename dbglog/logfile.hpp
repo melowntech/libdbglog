@@ -59,6 +59,21 @@ public:
         return true;
     }
 
+    bool log_file_truncate() {
+        boost::mutex::scoped_lock guard(m_);
+        if (filename_.empty()) {
+            return false;
+        }
+
+        if (::ftruncate(fd_, 0) == -1) {
+            std::cerr << "Error truncating log file <" << filename_
+                      << ">: " << errno << std::endl;
+            return false;
+        }
+
+        return true;
+    }
+
     bool tie(int fd, bool remember=true) {
         boost::mutex::scoped_lock guard(m_);
 

@@ -64,6 +64,11 @@ namespace dbglog {
         return detail::deflog.log_file(filename);
     }
 
+    inline bool log_file_truncate()
+    {
+        return detail::deflog.log_file_truncate();
+    }
+
     inline bool log_file_owner(long uid, long gid)
     {
         return detail::deflog.log_file_owner(uid, gid);
