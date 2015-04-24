@@ -27,6 +27,7 @@ enum level {
     , fatal =    0xf0000u
 
     , default_ =  info3 | warn2 | err2
+    , verbose = info2 | warn2 | err2
 };
 
 } // namespace dbglog
