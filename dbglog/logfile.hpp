@@ -124,6 +124,8 @@ public:
         return true;
     }
 
+    bool closeOnExec(bool value);
+
 protected:
     bool write_file(const std::string &line) {
         return write_file(line.data(), line.size());

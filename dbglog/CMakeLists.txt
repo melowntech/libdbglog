@@ -3,6 +3,7 @@ define_module(LIBRARY dbglog DEPENDS Boost_THREAD Boost_SYSTEM)
 set(dbglog_SOURCES
     dbglog.cpp
     mask.cpp
+    logfile.cpp
 )
 
 add_library(dbglog STATIC ${dbglog_SOURCES})

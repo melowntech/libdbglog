@@ -97,6 +97,10 @@ namespace dbglog {
     inline bool untie(int fd) {
         return detail::deflog.untie(fd);
     }
+
+    inline bool closeOnExec(bool value) {
+        return detail::deflog.closeOnExec(value);
+    }
 } // namespace dbglog
 
 /** Main log facility.
