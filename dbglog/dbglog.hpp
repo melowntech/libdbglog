@@ -124,6 +124,13 @@ namespace dbglog {
     DBGLOG_CONCATENATE(DBGLOG_EXPAND_, DBGLOG_NARG(__VA_ARGS__) \
                        (__VA_ARGS__))
 
+/** Same as LOG(...) but level specifier can be anything (i.e. not one of level
+ *  enumerations).
+ */
+#define LOGR(...) \
+    DBGLOG_CONCATENATE(DBGLOG_RAW_EXPAND_, DBGLOG_NARG(__VA_ARGS__) \
+                       (__VA_ARGS__))
+
 /** One shot log facility.
  *  Same as LOG but logs almost once during program lifetime.
  */
@@ -138,6 +145,13 @@ namespace dbglog {
  */
 #define LOGTHROW(...) \
     DBGLOG_CONCATENATE(DBGLOG_THROW_EXPAND_, DBGLOG_NARG(__VA_ARGS__) \
+                       (__VA_ARGS__))
+
+/** Same as LOGTHROW but level specifier can be anything (i.e. not one of level
+ *  enumerations).
+ */
+#define LOGTHROWR(...) \
+    DBGLOG_CONCATENATE(DBGLOG_THROW_RAW_EXPAND_, DBGLOG_NARG(__VA_ARGS__) \
                        (__VA_ARGS__))
 
 #endif // shared_dbglog_dbglog_hpp_included_

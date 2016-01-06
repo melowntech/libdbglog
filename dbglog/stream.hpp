@@ -96,6 +96,22 @@ private:
 #define DBGLOG_EXPAND_7(a, b, c, d, e, f, g) LOG_TAKES_EITHER_1_OR_2_ARGUMENTS_NOT_7
 #define DBGLOG_EXPAND_8(a, b, c, d, e, f, g, h) LOG_TAKES_EITHER_1_OR_2_ARGUMENTS_NOT_8
 
+#define DBGLOG_RAW_EXPAND_1(LEVEL) \
+    if (!dbglog::detail::check_level(LEVEL, dbglog::detail::deflog)); \
+    else dbglog::stream<dbglog::logger> \
+    (DBGLOG_PLACE, LEVEL, dbglog::detail::deflog)
+
+#define DBGLOG_RAW_EXPAND_2(LEVEL, SINK) \
+    if (!dbglog::detail::check_level(LEVEL, SINK)); \
+    else dbglog::stream<decltype(SINK)>(DBGLOG_PLACE, LEVEL, SINK)
+
+#define DBGLOG_RAW_EXPAND_3(a, b, c) LOG_TAKES_EITHER_1_OR_2_ARGUMENTS_NOT_3
+#define DBGLOG_RAW_EXPAND_4(a, b, c, d) LOG_TAKES_EITHER_1_OR_2_ARGUMENTS_NOT_4
+#define DBGLOG_RAW_EXPAND_5(a, b, c, d, e) LOG_TAKES_EITHER_1_OR_2_ARGUMENTS_NOT_5
+#define DBGLOG_RAW_EXPAND_6(a, b, c, d, e, f) LOG_TAKES_EITHER_1_OR_2_ARGUMENTS_NOT_6
+#define DBGLOG_RAW_EXPAND_7(a, b, c, d, e, f, g) LOG_TAKES_EITHER_1_OR_2_ARGUMENTS_NOT_7
+#define DBGLOG_RAW_EXPAND_8(a, b, c, d, e, f, g, h) LOG_TAKES_EITHER_1_OR_2_ARGUMENTS_NOT_8
+
 #define DBGLOG_ADD_LINE_NO(x) DBGLOG_ADD_LINE_NO1(x,__LINE__)
 #define DBGLOG_ADD_LINE_NO1(x, y) DBGLOG_ADD_LINE_NO2(x, y)
 #define DBGLOG_ADD_LINE_NO2(x, y) x##y
@@ -138,7 +154,23 @@ private:
 #define DBGLOG_THROW_EXPAND_7(a, b, c, d, e, f, g) THROW_TAKES_EITHER_2_OR_3_ARGUMENTS_NOT_7
 #define DBGLOG_THROW_EXPAND_8(a, b, c, d, e, f, g, h) THROW_TAKES_EITHER_2_OR_3_ARGUMENTS_NOT_8
 
-#define DBGLOG_PLACE dbglog::location \
+#define DBGLOG_THROW_RAW_EXPAND_1 THROW_TAKES_EITHER_2_OR_3_ARGUMENTS_NOT_1
+
+#define DBGLOG_THROW_RAW_EXPAND_2(LEVEL, EXCTYPE)                           \
+    dbglog::exc_stream<dbglog::logger, EXCTYPE>                         \
+    (DBGLOG_PLACE, LEVEL, dbglog::detail::deflog)
+
+#define DBGLOG_THROW_RAW_EXPAND_3(LEVEL, SINK, EXCTYPE)                     \
+    dbglog::exc_stream<decltype(SINK), EXCTYPE>                    \
+    (DBGLOG_PLACE, LEVEL, SINK)
+
+#define DBGLOG_THROW_RAW_EXPAND_4(a, b, c, d) THROW_TAKES_EITHER_2_OR_3_ARGUMENTS_NOT_4
+#define DBGLOG_THROW_RAW_EXPAND_5(a, b, c, d, e) THROW_TAKES_EITHER_2_OR_3_ARGUMENTS_NOT_5
+#define DBGLOG_THROW_RAW_EXPAND_6(a, b, c, d, e, f) THROW_TAKES_EITHER_2_OR_3_ARGUMENTS_NOT_6
+#define DBGLOG_THROW_RAW_EXPAND_7(a, b, c, d, e, f, g) THROW_TAKES_EITHER_2_OR_3_ARGUMENTS_NOT_7
+#define DBGLOG_THROW_RAW_EXPAND_8(a, b, c, d, e, f, g, h) THROW_TAKES_EITHER_2_OR_3_ARGUMENTS_NOT_8
+
+#define DBGLOG_PLACE dbglog::location                       \
     (__FILE__, (const char*)__FUNCTION__, __LINE__, true)
 
 #endif // shared_dbglog_stream_hpp_included_
