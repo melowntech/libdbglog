@@ -48,7 +48,7 @@ public:
         : loc_(loc), l_(l), sink_(sink)
     {}
 
-    ~exc_stream() {
+    ~exc_stream() noexcept(false) {
         sink_.log(l_, os_.str(), loc_);
         os_ << " @" << loc_;
         if (!std::uncaught_exception()) {
