@@ -1,19 +1,34 @@
 #ifndef shared_dbglog_stream_hpp_included_
 #define shared_dbglog_stream_hpp_included_
 
-#include <dbglog/logger.hpp>
-#include <dbglog/level.hpp>
-#include <dbglog/detail/log_helpers.hpp>
-#include <dbglog/detail/logger.hpp>
+#include <utility>
+#include <cstddef>
 
 #include <boost/noncopyable.hpp>
+#include <boost/format.hpp>
 
 #include <sstream>
 #include <stdexcept>
 
-#include <stddef.h>
+#include "dbglog/logger.hpp"
+#include "dbglog/level.hpp"
+#include "dbglog/detail/log_helpers.hpp"
+#include "dbglog/detail/logger.hpp"
 
 namespace dbglog {
+
+namespace detail {
+
+inline void formatMessage(boost::format&) {}
+
+template <typename T, typename ...Args>
+inline void formatMessage(boost::format &fmt, T &&arg, Args &&...rest)
+{
+    fmt % arg;
+    return formatMessage(fmt, std::forward<Args>(rest)...);
+}
+
+} // namespace detail
 
 template <typename SinkType>
 class stream : public boost::noncopyable
@@ -31,6 +46,25 @@ public:
     std::basic_ostream<char>& operator<<(const T &t)
     {
         return os_ << t;
+    }
+
+    template <typename ...Args>
+    stream& operator()(const std::string &format, Args &&...args)
+    {
+        boost::format fmt(format);
+        fmt.exceptions(boost::io::no_error_bits);
+        detail::formatMessage(fmt, std::forward<Args>(args)...);
+        os_ << fmt;
+        return *this;
+    }
+
+    template <typename ...Args>
+    stream& operator()(boost::format &&fmt, Args &&...args)
+    {
+        fmt.exceptions(boost::io::no_error_bits);
+        detail::formatMessage(fmt, std::forward<Args>(args)...);
+        os_ << fmt;
+        return *this;
     }
 
 private:
