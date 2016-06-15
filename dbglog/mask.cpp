@@ -73,6 +73,8 @@ void mask::from_string(const std::string &str)
     rule none(string("NONE")[boost::phoenix::ref(m) = dbglog::none]);
     rule all(string("ALL")[boost::phoenix::ref(m) = dbglog::all]);
     rule verbose(string("VERBOSE")[boost::phoenix::ref(m) = dbglog::verbose]);
+    rule noDebug(string("ND")
+                    [boost::phoenix::ref(m) = dbglog::noDebug]);
 
     rule debug(char_('D')[boost::phoenix::ref(m) |= dbglog::debug]);
 
@@ -91,7 +93,7 @@ void mask::from_string(const std::string &str)
     rule err3(string("E3")[boost::phoenix::ref(m) |= dbglog::err3]);
     rule err4(string("E4")[boost::phoenix::ref(m) |= dbglog::err4]);
 
-    rule grammar(default_ | all | none | verbose
+    rule grammar(default_ | all | none | verbose | noDebug
                  | +(debug | info1 | info2 | info3 | info4
                      | warn1 | warn2 | warn3 | warn4
                      | err1 | err2 | err3 | err4));

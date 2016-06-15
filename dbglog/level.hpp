@@ -28,6 +28,7 @@ enum level {
 
     , default_ =  info3 | warn2 | err2
     , verbose = info2 | warn2 | err2
+    , noDebug = info1 | warn1 | err1
 };
 
 } // namespace dbglog
