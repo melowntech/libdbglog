@@ -26,6 +26,10 @@
 
 namespace dbglog {
 
+namespace detail {
+    const ::mode_t DefaultMode(S_IRUSR | S_IWUSR);
+}
+
 class logger_file : boost::noncopyable {
 public:
     logger_file()
@@ -49,16 +53,18 @@ public:
         }
     }
 
-    bool log_file(const std::string &filename) {
+    bool log_file(const std::string &filename
+                  , ::mode_t mode = detail::DefaultMode)
+    {
         boost::mutex::scoped_lock guard(m_);
         if (filename.empty()) {
-            if (!open_file("/dev/null", fd_)) {
+            if (!open_file("/dev/null", fd_, mode)) {
                 return false;
             }
             use_file_ = false;
             retie(); // back to /dev/null to allow log file to be closed
         } else {
-            if (!open_file(filename, fd_)) {
+            if (!open_file(filename, fd_, mode)) {
                 return false;
             }
             use_file_ = true;
@@ -107,7 +113,9 @@ public:
         return true;
     }
 
-    bool untie(int fd, const std::string &path = "/dev/null") {
+    bool untie(int fd, const std::string &path = "/dev/null"
+               , ::mode_t mode = detail::DefaultMode)
+    {
         boost::mutex::scoped_lock guard(m_);
 
         // check for existence
@@ -117,7 +125,7 @@ public:
         }
 
         // point fd to something else
-        if (!open_file(path, fd)) {
+        if (!open_file(path, fd, mode)) {
             return false;
         }
 
@@ -162,7 +170,9 @@ protected:
     bool use_file() const { return use_file_; }
 
 private:
-    bool open_file(const std::string &filename, int dest) {
+    bool open_file(const std::string &filename, int dest
+                   , ::mode_t mode)
+    {
         class file_closer {
         public:
             file_closer(int fd) : fd_(fd) {}
@@ -180,8 +190,7 @@ private:
 
         private:
             int fd_;
-        } f(::open(filename.c_str(), O_WRONLY | O_CREAT | O_APPEND
-                   , S_IRUSR | S_IWUSR));
+        } f(::open(filename.c_str(), O_WRONLY | O_CREAT | O_APPEND, mode));
 
         if (-1 == f) {
             std::cerr << "Error opening log file <" << filename
