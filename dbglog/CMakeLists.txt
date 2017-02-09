@@ -1,4 +1,8 @@
-define_module(LIBRARY dbglog DEPENDS Boost_THREAD Boost_SYSTEM)
+# bump version here
+set(dbglog_VERSION 1.4)
+
+define_module(LIBRARY dbglog=${dbglog_VERSION}
+  DEPENDS Boost_THREAD Boost_SYSTEM)
 
 set(dbglog_SOURCES
     dbglog.cpp
