@@ -138,6 +138,8 @@ public:
         use_console_ = value;
     }
 
+    bool get_log_console() { return use_console_ ; }
+
     void set_mask(const mask &m) {
         mask_ = ~m.get();
         for (const auto &sink : sinks_) {

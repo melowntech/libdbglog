@@ -84,6 +84,11 @@ namespace dbglog {
         return detail::deflog.log_console(value);
     }
 
+    inline bool get_log_console()
+    {
+        return detail::deflog.get_log_console();
+    }
+
     inline bool log_file(const std::string &filename)
     {
         return detail::deflog.log_file(filename);
