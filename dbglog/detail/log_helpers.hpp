@@ -38,15 +38,7 @@
 
 #include <atomic>
 
-// implement TEMP_FAILURE_RETRY if not present on platform (via C++11 lambda)
-#ifndef TEMP_FAILURE_RETRY
-#define TEMP_FAILURE_RETRY(operation) [&]()->int {       \
-        for (;;) { int e(operation);                     \
-            if ((-1 == e) && (EINTR == errno)) continue; \
-            return e;                                    \
-        }                                                \
-    }()
-#endif
+#include "./system.hpp"
 
 namespace dbglog { namespace detail {
 
@@ -129,6 +121,7 @@ public:
         if (!holder_.get()) {
             holder_.reset(new std::string(boost::lexical_cast<std::string>
                                           (generator_++)));
+            setThreadName(*holder_);
         }
         return *holder_;
     }
@@ -139,6 +132,7 @@ public:
         } else {
             *holder_ = value;
         }
+        setThreadName(value);
     }
 
 private:

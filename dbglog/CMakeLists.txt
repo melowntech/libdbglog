@@ -10,6 +10,16 @@ set(dbglog_SOURCES
     logfile.cpp
 )
 
+if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+  list(APPEND dbglog_SOURCES
+    detail/system.linux.cpp
+    )
+else()
+  list(APPEND dbglog_SOURCES
+    detail/system.unsupported.cpp
+    )
+endif()
+
 add_library(dbglog STATIC ${dbglog_SOURCES})
 buildsys_library(dbglog)
 
