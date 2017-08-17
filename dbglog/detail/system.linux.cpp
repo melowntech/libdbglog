@@ -31,10 +31,13 @@
 namespace dbglog { namespace detail {
 
 /** Set current thread name.
+ *
+ *  Not used, sets process name and cannot be killed by killall
  */
 void setThreadName(const std::string &value)
 {
-    prctl(PR_SET_NAME, value.c_str(), 0, 0, 0);
+    (void) value;
+    // prctl(PR_SET_NAME, value.c_str(), 0, 0, 0);
 }
 
 } } // namespace dbglog::detail
