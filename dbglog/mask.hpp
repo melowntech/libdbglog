@@ -66,9 +66,9 @@ private:
     unsigned int mask_;
 };
 
-mask max(const mask &l, const mask &r);
+mask (max)(const mask &l, const mask &r);
 
-mask min(const mask &l, const mask &r);
+mask (min)(const mask &l, const mask &r);
 
 } // namespace dbglog
 

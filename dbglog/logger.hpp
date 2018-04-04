@@ -23,6 +23,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
 #ifndef shared_dbglog_logger_hpp_included_
 #define shared_dbglog_logger_hpp_included_
 
@@ -36,7 +37,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <unistd.h>
 #include <cerrno>
 
 #include "level.hpp"
@@ -182,7 +182,7 @@ private:
            << detail::level2string(l);
 
         if (show_pid_) {
-            os << " [" << getpid();
+            os << " [" << detail::processId();
             if (show_threads_) {
                 os << '(' << detail::thread_id::get() << ')';
             }

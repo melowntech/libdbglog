@@ -30,14 +30,13 @@
 #include <dbglog/location.hpp>
 
 #include <errno.h>
-#include <time.h>
-#include <sys/time.h>
 
 #include <boost/thread.hpp>
 #include <boost/lexical_cast.hpp>
 
 #include <atomic>
 
+#include "./time.hpp"
 #include "./system.hpp"
 
 namespace dbglog { namespace detail {
@@ -66,53 +65,6 @@ inline const char* level2string(dbglog::level l)
 
     default: return "??";
     }
-}
-
-typedef char timebuffer[64];
-
-inline char* format_time(timebuffer &b, unsigned short precision = 0)
-{
-    timeval now;
-    gettimeofday(&now, 0x0);
-    tm now_bd;
-    localtime_r(&now.tv_sec, &now_bd);
-    auto end(b + strftime(b, sizeof(b) - 1, "%Y-%m-%d %T", &now_bd));
-
-    // append
-    switch (precision) {
-    case 0: break;
-
-    case 1:
-        sprintf(end, ".%01u"
-                , static_cast<unsigned int>(now.tv_usec / 100000));
-        break;
-
-    case 2:
-        sprintf(end, ".%02u"
-                , static_cast<unsigned int>(now.tv_usec / 10000));
-        break;
-
-    case 3:
-        sprintf(end, ".%03u"
-                , static_cast<unsigned int>(now.tv_usec / 1000));
-        break;
-
-    case 4:
-        sprintf(end, ".%04u"
-                , static_cast<unsigned int>(now.tv_usec / 100));
-        break;
-
-    case 5:
-        sprintf(end, ".%05u", static_cast<unsigned int>(now.tv_usec / 10));
-        break;
-
-    default:
-        // 6 and more
-        sprintf(end, ".%06u", static_cast<unsigned int>(now.tv_usec));
-        break;
-    }
-
-    return b;
 }
 
 class thread_id {

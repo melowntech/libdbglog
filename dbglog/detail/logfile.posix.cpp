@@ -24,42 +24,27 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef dbglog_detail_system_hpp_included_
-#define dbglog_detail_system_hpp_included_
+#include "../logfile.hpp"
 
-#include <string>
+namespace dbglog {
 
-#ifdef _WIN32
-#  include <process.h>
-#else
-#  include <sys/types.h>
-#  include <unistd.h>
-#endif
+bool logger_file::closeOnExec(bool value)
+{
+    // no log file -> fine
+    if (fd_ < 0) { return true; }
 
-// implement TEMP_FAILURE_RETRY if not present on platform (via C++11 lambda)
-#ifndef TEMP_FAILURE_RETRY
-#define TEMP_FAILURE_RETRY(operation) [&]()->int {       \
-        for (;;) { int e(operation);                     \
-            if ((-1 == e) && (EINTR == errno)) continue; \
-            return e;                                    \
-        }                                                \
-    }()
-#endif
+    int flags(::fcntl(fd_, F_GETFD, 0));
+    if (flags == -1) { return false; }
+    if (value) {
+        flags |= FD_CLOEXEC;
+    } else {
+        flags &= ~FD_CLOEXEC;
+    }
 
-namespace dbglog { namespace detail {
-
-/** Set current thread name.
- */
-void setThreadName(const std::string &value);
-
-inline int processId() {
-#ifdef _WIN32
-    return ::_getpid();
-#else
-    return ::getpid();
-#endif
+    if (::fcntl(fd_, F_SETFD, flags) == -1) {
+        return false;
+    }
+    return true;
 }
 
-} } // namespace dbglog::detail
-
-#endif // dbglog_detail_system_hpp_included_
+} // namespace dbglog
