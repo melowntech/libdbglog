@@ -29,6 +29,12 @@
 #include <cstddef>
 #include <cstring>
 
+#ifdef _WIN32
+#define DBGLOG_PATH_SEPARATOR '\\'
+#else
+#define DBGLOG_PATH_SEPARATOR '/'
+#endif
+
 namespace dbglog {
 
 struct location {
@@ -43,7 +49,7 @@ struct location {
 
 private:
     static const char *trim(const char *file) {
-        const char *end = strrchr(file, '/');
+        const char *end = strrchr(file, DBGLOG_PATH_SEPARATOR);
         return end ? end + 1 : file;
     }
 };

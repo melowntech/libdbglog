@@ -42,7 +42,7 @@ inline char* format_time(timebuffer &b, unsigned short precision = 0)
     ::GetLocalTime(&now);
     auto left(sizeof(b) - 1);
     auto written(snprintf(b, left
-                          , "%4d-%2d-%2d %2d:%2d:%2d"
+                          , "%04d-%02d-%02d %02d:%02d:%02d"
                           , now.wYear, now.wMonth, now.wDay
                           , now.wHour, now.wMinute, now.wSecond));
     // append

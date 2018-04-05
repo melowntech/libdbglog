@@ -130,10 +130,19 @@ private:
 
 } // namespace dbglog
 
-#define DBGLOG_NARG(...) DBGLOG_NARG_(__VA_ARGS__, DBGLOG_RSEQ_N())
-#define DBGLOG_NARG_(...) DBGLOG_ARG_N(__VA_ARGS__)
-#define DBGLOG_ARG_N(_1, _2, _3, _4, _5, _6, _7, _8, N, ...) N
-#define DBGLOG_RSEQ_N() 8, 7, 6, 5, 4, 3, 2, 1, 0
+
+// don't ask...
+#ifdef _WIN32
+#  define DBGLOG_PAREN_LEFT_ (
+#  define DBGLOG_PAREN_RIGHT_ )
+#  define DBGLOG_NARG(...) DBGLOG_ARG_N DBGLOG_PAREN_LEFT_ ,##__VA_ARGS__,8,7,6,5,4,3,2,1,0 DBGLOG_PAREN_RIGHT_
+#  define DBGLOG_ARG_N(_0,_1,_2,_3,_4,_5,_6,_7,_8,N,...) N
+#else
+#  define DBGLOG_NARG(...) DBGLOG_NARG_(__VA_ARGS__, DBGLOG_RSEQ_N())
+#  define DBGLOG_NARG_(...) DBGLOG_ARG_N(__VA_ARGS__)
+#  define DBGLOG_ARG_N(_1, _2, _3, _4, _5, _6, _7, _8, N, ...) N
+#  define DBGLOG_RSEQ_N() 8, 7, 6, 5, 4, 3, 2, 1, 0
+#endif
 
 #define DBGLOG_CONCATENATE(arg1, arg2) DBGLOG_CONCATENATE1(arg1, arg2)
 #define DBGLOG_CONCATENATE1(arg1, arg2) DBGLOG_CONCATENATE2(arg1, arg2)
