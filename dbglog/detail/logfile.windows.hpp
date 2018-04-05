@@ -84,11 +84,11 @@ public:
     {
         boost::mutex::scoped_lock guard(m_);
         if (filename.empty()) {
-            if (!open_file("/dev/null", fd_, mode)) {
+            if (!open_file("NUL", fd_, mode)) {
                 return false;
             }
             use_file_ = false;
-            retie(); // back to /dev/null to allow log file to be closed
+            retie(); // back to NUL to allow log file to be closed
         } else {
             if (!open_file(filename, fd_, mode)) {
                 return false;
@@ -105,8 +105,8 @@ public:
         boost::mutex::scoped_lock guard(m_);
         if (filename_.empty()) { return false; }
 
-
         std::cerr << "Cannot truncate file on Windows." << std::endl;
+        return false;
     }
 
     bool tie(int fd, bool remember=true) {
