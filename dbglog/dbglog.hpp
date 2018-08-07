@@ -35,15 +35,21 @@ namespace dbglog {
     const unsigned short millis(3);
     const unsigned short micros(6);
 
+    /** Thread safety: thread safe.
+     */
     inline module make_module() {
         return module(detail::deflog);
     }
 
+    /** Thread safety: thread safe.
+     */
     inline module make_module(const std::string &name)
     {
         return module(name, detail::deflog);
     }
 
+    /** Thread safety: none.
+     */
     inline void set_mask(unsigned int mask)
     {
         return detail::deflog.set_mask(mask);
@@ -54,83 +60,132 @@ namespace dbglog {
         return detail::deflog.set_mask(m);
     }
 
+    /** Thread safety: none.
+     */
     inline void set_mask(const std::string &m)
     {
         return detail::deflog.set_mask(mask(m));
     }
 
+    /** Thread safety: none.
+     */
     inline unsigned int get_mask()
     {
         return detail::deflog.get_mask();
     }
 
+    /** Thread safety: none.
+     */
     inline std::string get_mask_string()
     {
         return detail::deflog.get_mask_string();
     }
 
+    /** Thread safety: none.
+     */
     inline void log_thread(bool value = true)
     {
         return detail::deflog.log_thread(value);
     }
 
+    /** Thread safety: none.
+     */
     inline void log_pid(bool value = true)
     {
         return detail::deflog.log_pid(value);
     }
 
+    /** Thread safety: none.
+     */
     inline void log_console(bool value = true)
     {
         return detail::deflog.log_console(value);
     }
 
+    /** Thread safety: none.
+     */
     inline bool get_log_console()
     {
         return detail::deflog.get_log_console();
     }
 
+    /** Thread safety: thread safe.
+     */
     inline bool log_file(const std::string &filename)
     {
         return detail::deflog.log_file(filename);
     }
 
+    /** Thread safety: thread safe.
+     */
     inline bool log_file_truncate()
     {
         return detail::deflog.log_file_truncate();
     }
 
+    /** Thread safety: thread safe.
+     */
     inline bool log_file_owner(long uid, long gid)
     {
         return detail::deflog.log_file_owner(uid, gid);
     }
 
+    /** Thread safety: thread safe.
+     */
     void thread_id(const std::string &id);
 
+    /** Thread safety: thread safe.
+     */
     std::string thread_id();
 
+    /** Thread safety: none.
+     */
     inline void log_time_precision(unsigned short precision) {
         detail::deflog.log_time_precision(precision);
     }
 
+    /** Thread safety: none.
+     */
     inline unsigned short log_time_precision() {
         return detail::deflog.log_time_precision();
     }
 
+    /** Thread safety: none.
+     */
     inline void add_sink(const Sink::pointer &sink) {
         detail::deflog.addSink(sink);
     }
 
+    /** Thread safety: none.
+     */
     inline bool tie(int fd) {
         return detail::deflog.tie(fd);
     }
 
+    /** Thread safety: none.
+     */
     inline bool untie(int fd) {
         return detail::deflog.untie(fd);
     }
 
+    /** Thread safety: none.
+     */
     inline bool closeOnExec(bool value) {
         return detail::deflog.closeOnExec(value);
     }
+
+    /** Thread safety: none.
+     */
+    inline void log_line_prefix(const std::string &prefix) {
+        detail::deflog.set_prefix(prefix);
+    }
+
+    /** Thread safety: none.
+    */
+    inline const std::string& log_line_prefix() {
+        return detail::deflog.get_prefix();
+    }
+
 } // namespace dbglog
 
 /** Main log facility.

@@ -171,6 +171,14 @@ public:
         time_precision_ = time_precision;
     }
 
+    void set_prefix(const std::string &prefix = "") {
+        line_prefix_ = prefix;
+    }
+
+    const std::string& get_prefix() const {
+        return line_prefix_;
+    }
+
 private:
     inline bool check_level_(level l) const {
         return !(mask_ & l) || (l == fatal);
@@ -180,6 +188,7 @@ private:
         detail::timebuffer now;
         os << detail::format_time(now, time_precision_) << ' '
            << detail::level2string(l);
+        os << line_prefix_;
 
         if (show_pid_) {
             os << " [" << detail::processId();
@@ -208,6 +217,10 @@ private:
     unsigned short time_precision_;
 
     bool use_console_; //!< Log to console (stderr)
+
+    /** Line prefix added before message.
+     */
+    std::string line_prefix_;
 
     Sink::list sinks_;
 
