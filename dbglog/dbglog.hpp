@@ -158,6 +158,12 @@ namespace dbglog {
 
     /** Thread safety: none.
      */
+    inline void clear_sinks() {
+        detail::deflog.clearSinks();
+    }
+
+    /** Thread safety: none.
+     */
     inline bool tie(int fd) {
         return detail::deflog.tie(fd);
     }

@@ -70,6 +70,11 @@ public:
         if (sink->shared_mask()) { sink->set_mask(get_mask()); }
     }
 
+    // NB: not threads safe; this must be done before any new thread is created!
+    void clearSinks() {
+        sinks_.clear();
+    }
+
     bool log(level l, const std::string &message
              , const location &loc)
     {
