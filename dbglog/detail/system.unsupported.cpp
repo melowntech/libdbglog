@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "./system.hpp"
+#include "system.hpp"
 
 namespace dbglog { namespace detail {
 

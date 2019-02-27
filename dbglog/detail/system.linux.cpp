@@ -26,7 +26,7 @@
 
 #include <sys/prctl.h>
 
-#include "./system.hpp"
+#include "system.hpp"
 
 namespace dbglog { namespace detail {
 

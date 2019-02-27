@@ -36,8 +36,8 @@
 
 #include <atomic>
 
-#include "./time.hpp"
-#include "./system.hpp"
+#include "time.hpp"
+#include "system.hpp"
 
 namespace dbglog { namespace detail {
 
