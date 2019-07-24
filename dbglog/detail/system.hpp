@@ -29,9 +29,7 @@
 
 #include <string>
 
-#ifdef _WIN32
-#  include <process.h>
-#else
+#ifndef _WIN32
 #  include <sys/types.h>
 #  include <unistd.h>
 #endif
@@ -52,13 +50,13 @@ namespace dbglog { namespace detail {
  */
 void setThreadName(const std::string &value);
 
-inline int processId() {
 #ifdef _WIN32
-    return ::_getpid();
+int processId();
 #else
+inline int processId() {
     return ::getpid();
-#endif
 }
+#endif
 
 } } // namespace dbglog::detail
 

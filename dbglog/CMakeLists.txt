@@ -9,20 +9,15 @@ set(dbglog_SOURCES
   mask.cpp
   )
 
-if(CMAKE_SYSTEM_NAME MATCHES Linux)
-  # linux
+if(WIN32)
   list(APPEND dbglog_SOURCES
-    detail/system.linux.cpp
+    detail/system.windows.cpp
     )
 else()
   list(APPEND dbglog_SOURCES
-    detail/system.unsupported.cpp
+    detail/system.posix.cpp
+    detail/logfile.posix.cpp
     )
-endif()
-
-if(NOT WIN32)
-  list(APPEND dbglog_SOURCES
-    detail/logfile.posix.cpp)
 endif()
 
 add_library(dbglog STATIC ${dbglog_SOURCES})
