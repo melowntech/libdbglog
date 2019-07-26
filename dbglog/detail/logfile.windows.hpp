@@ -24,8 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef dbglog_logfile_posix_hpp_included_
-#define dbglog_logfile_posix_hpp_included_
+#ifndef dbglog_logfile_windows_hpp_included_
+#define dbglog_logfile_windows_hpp_included_
 
 #include <io.h>
 
@@ -37,6 +37,7 @@
 #include <boost/thread.hpp>
 
 #include <cerrno>
+#include <winapifamily.h>
 
 // implement TEMP_FAILURE_RETRY if not present on platform (via C++11 lambda)
 #ifndef TEMP_FAILURE_RETRY
@@ -53,6 +54,8 @@ namespace dbglog {
 namespace detail {
     const int DefaultMode(_S_IWRITE | _S_IREAD);
 }
+
+#if WINAPI_PARTITION_DESKTOP
 
 class logger_file : boost::noncopyable {
 public:
@@ -266,6 +269,50 @@ private:
     std::set<int> ties_;
 };
 
+#else // WINAPI_PARTITION_DESKTOP
+
+
+class logger_file : boost::noncopyable {
+public:
+
+    bool log_file(const std::string &filename
+        , int mode = detail::DefaultMode) {
+        return false;
+    }
+
+    bool log_file_truncate() {
+        return false;
+    }
+
+    bool tie(int fd, bool remember = true) {
+        return false;
+    }
+
+    bool untie(int fd, const std::string &path = "NUL"
+        , int mode = detail::DefaultMode) {
+        return false;
+    }
+
+    bool log_file_owner(int owner, int group) {
+        return false;
+    }
+
+    bool closeOnExec(bool value) { return false; }
+
+protected:
+    bool write_file(const std::string &line) {
+        return false;
+    }
+
+    bool write_file(const char *data, std::size_t left) {
+        return false;
+    }
+
+    bool use_file() const { return false; }
+};
+
+#endif // WINAPI_PARTITION_DESKTOP
+
 } // namespace dbglog
 
-#endif // dbglog_logfile_posix_hpp_included_
+#endif // dbglog_logfile_windows_hpp_included_
