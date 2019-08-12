@@ -24,7 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <sys/prctl.h>
+// sys/prctl is not awailable on macos
+//#include <sys/prctl.h>
 
 #include "system.hpp"
 
