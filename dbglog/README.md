@@ -22,7 +22,7 @@ LOG(level)("Some number %d.", 10);
 
 ## Mask grammar
 
-Following is a ABNF grammar for log mask syntax. NB: All string are case sensitive.
+Following is a [ABNF](https://en.wikipedia.org/wiki/ABNF) grammar for log mask syntax. NB: All string are case sensitive.
 ```
 mask = 1*severity / alias                 ; mask is either list of severity settings or one of predefined aliases
 severity = debug / info / warning / error ; custom severity 
