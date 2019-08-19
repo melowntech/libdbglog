@@ -33,10 +33,10 @@ error = "E" level                         ; error severity
 level = "1" / "2" / "3"/ "4"              ; severity level, 1-4
 
 alias = "DEFAULT"                         ; alias for "I3W2E2" (library default)
-alias /= "ALL"                            ; alias for "DI1W1E1" (log everything)
-alias /= "NONE"                           ; no logging at all (disables fatal severity as well)
-alias /= "VERBOSE"                        ; alias for "I2W2E2" (more verbose than default)
-alias /= "ND"                             ; alias for "I1W1E1" ("ALL" without debug)
+alias =/ "ALL"                            ; alias for "DI1W1E1" (log everything)
+alias =/ "NONE"                           ; no logging at all (disables fatal severity as well)
+alias =/ "VERBOSE"                        ; alias for "I2W2E2" (more verbose than default)
+alias =/ "ND"                             ; alias for "I1W1E1" ("ALL" without debug)
 ```
 
 If multiple levels for one severity are used (e.g. `I1I4` then lowest level wins (i.e. `I3I4` is an equivalent of `I3`).
