@@ -24,16 +24,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef dbglog_detail_time_posix_hpp_included_
-#define dbglog_detail_time_posix_hpp_included_
-
-#include <cstdio>
+#include "time.hpp"
 
 #include <sys/time.h>
+#include <cstdio>
+#include <ctime>
 
 namespace dbglog { namespace detail {
 
-inline char* format_time(timebuffer &b, unsigned short precision = 0)
+char* format_time(timebuffer &b, unsigned short precision)
 {
     timeval now;
     gettimeofday(&now, 0x0);
@@ -79,5 +78,3 @@ inline char* format_time(timebuffer &b, unsigned short precision = 0)
 }
 
 } } // namespace dbglog::detail
-
-#endif // dbglog_detail_time_posix_hpp_included_

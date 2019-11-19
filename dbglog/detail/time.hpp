@@ -27,17 +27,12 @@
 #ifndef dbglog_detail_time_hpp_included_
 #define dbglog_detail_time_hpp_included_
 
-
 namespace dbglog { namespace detail {
 
 typedef char timebuffer[64];
 
-} } // namespace dbglog::detail
+char* format_time(timebuffer &b, unsigned short precision = 0);
 
-#ifdef _WIN32
-#  include "./time.windows.hpp"
-#else // _WIN32
-#  include "./time.posix.hpp"
-#endif // _WIN32
+} } // namespace dbglog::detail
 
 #endif // dbglog_detail_time_hpp_included_

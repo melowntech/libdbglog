@@ -26,14 +26,20 @@
 
 #include "../logfile.hpp"
 
+#include <winapifamily.h>
+
 namespace dbglog {
 
+#if WINAPI_PARTITION_DESKTOP
+
 logger_file::logger_file()
-    : use_file_(false), fd_(::open("/dev/null", O_WRONLY))
+    : use_file_(false), fd_(-1)
 {
-    if (-1 == fd_) {
+    if (::_sopen_s(&fd_, "NUL", _O_WRONLY, _SH_DENYNO
+                   , detail::DefaultMode))
+    {
         throw std::runtime_error
-            ("Cannot open /dev/null for log file. Oops.");
+            ("Cannot open NUL for log file. Oops.");
     }
 }
 
@@ -42,23 +48,23 @@ logger_file::~logger_file() {
         return;
     }
 
-    ::close(fd_);
+    ::_close(fd_);
 
     for (auto fd : ties_) {
-        ::close(fd);
+        ::_close(fd);
     }
 }
 
 bool logger_file::log_file(const std::string &filename
-              , ::mode_t mode)
+              , int mode)
 {
     boost::mutex::scoped_lock guard(m_);
     if (filename.empty()) {
-        if (!open_file("/dev/null", fd_, mode)) {
+        if (!open_file("NUL", fd_, mode)) {
             return false;
         }
         use_file_ = false;
-        retie(); // back to /dev/null to allow log file to be closed
+        retie(); // back to NUL to allow log file to be closed
     } else {
         if (!open_file(filename, fd_, mode)) {
             return false;
@@ -73,17 +79,10 @@ bool logger_file::log_file(const std::string &filename
 
 bool logger_file::log_file_truncate() {
     boost::mutex::scoped_lock guard(m_);
-    if (filename_.empty()) {
-        return false;
-    }
+    if (filename_.empty()) { return false; }
 
-    if (::ftruncate(fd_, 0) == -1) {
-        std::cerr << "Error truncating log file <" << filename_
-                  << ">: " << errno << std::endl;
-        return false;
-    }
-
-    return true;
+    std::cerr << "Cannot truncate file on Windows." << std::endl;
+    return false;
 }
 
 bool logger_file::tie(int fd, bool remember) {
@@ -110,7 +109,7 @@ bool logger_file::tie(int fd, bool remember) {
 }
 
 bool logger_file::untie(int fd, const std::string &path
-           , ::mode_t mode)
+           , int mode)
 {
     boost::mutex::scoped_lock guard(m_);
 
@@ -130,44 +129,25 @@ bool logger_file::untie(int fd, const std::string &path
     return true;
 }
 
-bool logger_file::log_file_owner(uid_t owner, gid_t group) {
-    if (fd_ < 0) { return false; }
-    if (-1 == ::fchown(fd_, owner, group)) {
-        return false;
-    }
-    return true;
+bool logger_file::log_file_owner(int owner, int group) {
+    return false;
 }
 
-bool logger_file::closeOnExec(bool value)
-{
-    // no log file -> fine
-    if (fd_ < 0) { return true; }
-
-    int flags(::fcntl(fd_, F_GETFD, 0));
-    if (flags == -1) { return false; }
-    if (value) {
-        flags |= FD_CLOEXEC;
-    } else {
-        flags &= ~FD_CLOEXEC;
-    }
-
-    if (::fcntl(fd_, F_SETFD, flags) == -1) {
-        return false;
-    }
-    return true;
+bool closeOnExec(bool value) {
+    return false;
 }
 
 bool logger_file::write_file(const std::string &line) {
     return write_file(line.data(), line.size());
 }
 
-bool logger_file::write_file(const char *data, size_t left) {
+bool logger_file::write_file(const char *data, std::size_t left) {
     if (!use_file_) {
         return false;
     }
 
     while (left) {
-        ssize_t written(TEMP_FAILURE_RETRY(::write(fd_, data, left)));
+        auto written(TEMP_FAILURE_RETRY(::_write(fd_, data, int(left))));
         if (-1 == written) {
             std::cerr << "Error writing to log file: "
                       << errno << std::endl;
@@ -179,18 +159,22 @@ bool logger_file::write_file(const char *data, size_t left) {
     return true;
 }
 
-bool logger_file::open_file(const std::string &filename, int dest
-               , ::mode_t mode)
-{
+bool logger_file::open_file(const std::string &filename, int dest, int mode) {
     class file_closer {
     public:
-        file_closer(int fd) : fd_(fd) {}
+        file_closer(const char *filename, int mode)
+            : fd_(-1)
+        {
+            ::_sopen_s(&fd_, filename, _O_WRONLY | _O_CREAT | _O_APPEND
+                       , _SH_DENYNO, mode);
+        }
+
         ~file_closer() {
             if (-1 == fd_) {
                 return;
             }
 
-            ::close(fd_);
+            ::_close(fd_);
         }
 
         operator int() {
@@ -199,7 +183,7 @@ bool logger_file::open_file(const std::string &filename, int dest
 
     private:
         int fd_;
-    } f(::open(filename.c_str(), O_WRONLY | O_CREAT | O_APPEND, mode));
+    } f(filename.c_str(), mode);
 
     if (-1 == f) {
         std::cerr << "Error opening log file <" << filename
@@ -228,7 +212,7 @@ void logger_file::retie() {
 
 int logger_file::safeDup2(int oldfd, int newfd) {
     for (;;) {
-        int res(::dup2(oldfd, newfd));
+        int res(::_dup2(oldfd, newfd));
         if (res != -1) {
             // OK
             return res;
@@ -248,4 +232,45 @@ int logger_file::safeDup2(int oldfd, int newfd) {
     }
 }
 
+#else // WINAPI_PARTITION_DESKTOP
+
+bool logger_file::log_file(const std::string &filename
+    , int mode = detail::DefaultMode) {
+    return false;
+}
+
+bool logger_file::log_file_truncate() {
+    return false;
+}
+
+bool logger_file::tie(int fd, bool remember = true) {
+    return false;
+}
+
+bool logger_file::untie(int fd, const std::string &path = "NUL"
+    , int mode = detail::DefaultMode) {
+    return false;
+}
+
+bool logger_file::log_file_owner(int owner, int group) {
+    return false;
+}
+
+bool logger_file::closeOnExec(bool value) {
+    return false;
+}
+
+bool logger_file::write_file(const std::string &line) {
+    return false;
+}
+
+bool logger_file::write_file(const char *data, std::size_t left) {
+    return false;
+}
+
+bool logger_file::use_file() const { return false; }
+
+#endif // WINAPI_PARTITION_DESKTOP
+
 } // namespace dbglog
+

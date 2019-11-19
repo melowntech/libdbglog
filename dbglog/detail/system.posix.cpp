@@ -24,21 +24,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-// sys/prctl is not awailable on macos
-//#include <sys/prctl.h>
-
 #include "system.hpp"
+
+#include <sys/types.h>
+#include <unistd.h>
 
 namespace dbglog { namespace detail {
 
-/** Set current thread name.
- *
- *  Not used, sets process name and cannot be killed by killall
- */
-void setThreadName(const std::string &value)
-{
-    (void) value;
-    // prctl(PR_SET_NAME, value.c_str(), 0, 0, 0);
+int processId() {
+    return ::getpid();
 }
 
 } } // namespace dbglog::detail

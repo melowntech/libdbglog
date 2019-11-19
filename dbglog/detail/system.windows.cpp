@@ -30,12 +30,6 @@
 
 namespace dbglog { namespace detail {
 
-/** Set current thread name.
- */
-void setThreadName(const std::string&) {
-    // no-op
-}
-
 int processId() {
     return ::GetCurrentProcessId();
 }

@@ -24,12 +24,16 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+
+is this used anywhere?
+
+
 #ifndef dbglog_detail_win32_hpp_included_
 #define dbglog_detail_win32_hpp_included_
 
 /** Windows specific code
  */
-#  ifdef __WIN32__
+#ifdef __WIN32__
 
 #ifndef WIN32_LEAN_AND_MEAN
 #  define WIN32_LEAN_AND_MEAN
@@ -49,6 +53,6 @@ int gettimeofday(struct Timeval *tp, void *);
 
 } } // namespace dbglog { namespace detail {
 
-#  endif // __WIN32__
+#endif // __WIN32__
 
 #endif // dbglog_detail_win32_hpp_included_

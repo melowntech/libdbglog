@@ -7,16 +7,33 @@ define_module(LIBRARY dbglog=${dbglog_VERSION}
 set(dbglog_SOURCES
   dbglog.cpp
   mask.cpp
+  config.hpp
+  dbglog.hpp
+  detail/logger.hpp
+  detail/log_helpers.hpp
+  detail/system.hpp
+  detail/time.hpp
+  level.hpp
+  location.hpp
+  logfile.hpp
+  logger.hpp
+  mask.hpp
+  sink.hpp
+  stream.hpp
   )
 
 if(WIN32)
   list(APPEND dbglog_SOURCES
     detail/system.windows.cpp
+    detail/logfile.windows.cpp
+    detail/time.windows.cpp
+    detail/win32.hpp
     )
 else()
   list(APPEND dbglog_SOURCES
     detail/system.posix.cpp
     detail/logfile.posix.cpp
+    detail/time.posix.cpp
     )
 endif()
 

@@ -26,10 +26,78 @@
 #ifndef dbglog_logfile_hpp_included_
 #define dbglog_logfile_hpp_included_
 
-#ifdef _WIN32
-#  include "./detail/logfile.windows.hpp"
-#else
-#  include "./detail/logfile.posix.hpp"
+#include <set>
+#include <string>
+#include <iostream>
+
+#include <boost/noncopyable.hpp>
+#include <boost/thread.hpp>
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <cerrno>
+
+// implement TEMP_FAILURE_RETRY if not present on platform (via C++11 lambda)
+#ifndef TEMP_FAILURE_RETRY
+#define TEMP_FAILURE_RETRY(operation) [&]()->int {       \
+        for (;;) { int e(operation);                     \
+            if ((-1 == e) && (EINTR == errno)) continue; \
+            return e;                                    \
+        }                                                \
+    }()
 #endif
+
+namespace dbglog {
+
+namespace detail {
+    const ::mode_t DefaultMode(S_IRUSR | S_IWUSR);
+}
+
+class logger_file : boost::noncopyable {
+public:
+    logger_file();
+
+    ~logger_file();
+
+    bool log_file(const std::string &filename
+                  , ::mode_t mode = detail::DefaultMode);
+
+    bool log_file_truncate();
+
+    bool tie(int fd, bool remember=true);
+
+    bool untie(int fd, const std::string &path = "/dev/null"
+               , ::mode_t mode = detail::DefaultMode);
+
+    bool log_file_owner(uid_t owner, gid_t group);
+
+    bool closeOnExec(bool value);
+
+protected:
+    bool write_file(const std::string &line);
+
+    bool write_file(const char *data, size_t left);
+
+    bool use_file() const { return use_file_; }
+
+private:
+    bool open_file(const std::string &filename, int dest
+                   , ::mode_t mode);
+
+    void retie();
+
+    int safeDup2(int oldfd, int newfd);
+
+    bool use_file_; //!< Log to configured file
+    std::string filename_; //!< log file filename
+    int fd_; //!< fd associated with output file
+
+    boost::mutex m_;
+    std::set<int> ties_;
+};
+
+} // namespace dbglog
 
 #endif // dbglog_logfile_hpp_included_

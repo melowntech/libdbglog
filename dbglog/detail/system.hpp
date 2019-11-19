@@ -27,36 +27,9 @@
 #ifndef dbglog_detail_system_hpp_included_
 #define dbglog_detail_system_hpp_included_
 
-#include <string>
-
-#ifndef _WIN32
-#  include <sys/types.h>
-#  include <unistd.h>
-#endif
-
-// implement TEMP_FAILURE_RETRY if not present on platform (via C++11 lambda)
-#ifndef TEMP_FAILURE_RETRY
-#define TEMP_FAILURE_RETRY(operation) [&]()->int {       \
-        for (;;) { int e(operation);                     \
-            if ((-1 == e) && (EINTR == errno)) continue; \
-            return e;                                    \
-        }                                                \
-    }()
-#endif
-
 namespace dbglog { namespace detail {
 
-/** Set current thread name.
- */
-void setThreadName(const std::string &value);
-
-#ifdef _WIN32
 int processId();
-#else
-inline int processId() {
-    return ::getpid();
-}
-#endif
 
 } } // namespace dbglog::detail
 

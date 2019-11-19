@@ -73,7 +73,6 @@ public:
         if (!holder_.get()) {
             holder_.reset(new std::string(boost::lexical_cast<std::string>
                                           (generator_++)));
-            setThreadName(*holder_);
         }
         return *holder_;
     }
@@ -84,7 +83,6 @@ public:
         } else {
             *holder_ = value;
         }
-        setThreadName(value);
     }
 
 private:
