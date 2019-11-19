@@ -26,11 +26,9 @@
 
 #include "../logfile.hpp"
 
-#include <winapifamily.h>
+#include <io.h>
 
 namespace dbglog {
-
-#if WINAPI_PARTITION_DESKTOP
 
 logger_file::logger_file()
     : use_file_(false), fd_(-1)
@@ -96,7 +94,7 @@ bool logger_file::tie(int fd, bool remember) {
 
     // TODO: add untie function + remember fd to be re-tied on file reopen
     if (-1 == safeDup2(fd_, fd)) {
-        std::cerr << "Error dupplicating fd(" << fd_ << ") to fd("
+        std::cerr << "Error duplicating fd(" << fd_ << ") to fd("
                   << fd << "): " << errno << std::endl;
         return false;
     }
@@ -135,10 +133,6 @@ bool logger_file::log_file_owner(int owner, int group) {
 
 bool closeOnExec(bool value) {
     return false;
-}
-
-bool logger_file::write_file(const std::string &line) {
-    return write_file(line.data(), line.size());
 }
 
 bool logger_file::write_file(const char *data, std::size_t left) {
@@ -192,7 +186,7 @@ bool logger_file::open_file(const std::string &filename, int dest, int mode) {
     }
 
     if (-1 == safeDup2(f, dest)) {
-        std::cerr << "Error dupplicating fd(" << f << ") to fd("
+        std::cerr << "Error duplicating fd(" << f << ") to fd("
                   << dest << "): " << errno << std::endl;
         return false;
     }
@@ -204,7 +198,7 @@ void logger_file::retie() {
     // retie all tied file descriptors
     for (auto fd : ties_) {
         if (-1 == safeDup2(fd_, fd)) {
-            std::cerr << "Error dupplicating fd(" << fd_ << ") to fd("
+            std::cerr << "Error duplicating fd(" << fd_ << ") to fd("
                       << fd << "): " << errno << std::endl;
         }
     }
@@ -231,46 +225,6 @@ int logger_file::safeDup2(int oldfd, int newfd) {
         return res;
     }
 }
-
-#else // WINAPI_PARTITION_DESKTOP
-
-bool logger_file::log_file(const std::string &filename
-    , int mode = detail::DefaultMode) {
-    return false;
-}
-
-bool logger_file::log_file_truncate() {
-    return false;
-}
-
-bool logger_file::tie(int fd, bool remember = true) {
-    return false;
-}
-
-bool logger_file::untie(int fd, const std::string &path = "NUL"
-    , int mode = detail::DefaultMode) {
-    return false;
-}
-
-bool logger_file::log_file_owner(int owner, int group) {
-    return false;
-}
-
-bool logger_file::closeOnExec(bool value) {
-    return false;
-}
-
-bool logger_file::write_file(const std::string &line) {
-    return false;
-}
-
-bool logger_file::write_file(const char *data, std::size_t left) {
-    return false;
-}
-
-bool logger_file::use_file() const { return false; }
-
-#endif // WINAPI_PARTITION_DESKTOP
 
 } // namespace dbglog
 

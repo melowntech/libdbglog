@@ -22,17 +22,28 @@ set(dbglog_SOURCES
   stream.hpp
   )
 
+if(BUILDSYS_UWP OR BUILDSYS_WASM)
+  list(APPEND dbglog_SOURCES
+    detail/logfile.dummy.cpp
+    )
+elseif(WIN32)
+  list(APPEND dbglog_SOURCES
+    detail/logfile.windows.cpp
+    )
+else()
+  list(APPEND dbglog_SOURCES
+    detail/logfile.posix.cpp
+    )
+endif()
+
 if(WIN32)
   list(APPEND dbglog_SOURCES
     detail/system.windows.cpp
-    detail/logfile.windows.cpp
     detail/time.windows.cpp
-    detail/win32.hpp
     )
 else()
   list(APPEND dbglog_SOURCES
     detail/system.posix.cpp
-    detail/logfile.posix.cpp
     detail/time.posix.cpp
     )
 endif()

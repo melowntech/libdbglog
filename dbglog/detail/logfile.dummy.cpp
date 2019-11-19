@@ -24,35 +24,45 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include "../logfile.hpp"
 
-is this used anywhere?
+namespace dbglog {
 
+logger_file::logger_file()
+{}
 
-#ifndef dbglog_detail_win32_hpp_included_
-#define dbglog_detail_win32_hpp_included_
+logger_file::~logger_file()
+{}
 
-/** Windows specific code
- */
-#ifdef __WIN32__
+bool logger_file::log_file(const std::string &filename
+    , int mode) {
+    return false;
+}
 
-#ifndef WIN32_LEAN_AND_MEAN
-#  define WIN32_LEAN_AND_MEAN
-#endif
-#include <Windows.h>
+bool logger_file::log_file_truncate() {
+    return false;
+}
 
-#include <cstdint>
+bool logger_file::tie(int fd, bool remember) {
+    return false;
+}
 
-namespace dbglog { namespace detail {
+bool logger_file::untie(int fd, const std::string &path
+    , int mode) {
+    return false;
+}
 
-struct Timeval {
-    std::int64_t tv_sec;
-    std::int64_t tv_usec;
-};
+bool logger_file::log_file_owner(int owner, int group) {
+    return false;
+}
 
-int gettimeofday(struct Timeval *tp, void *);
+bool logger_file::closeOnExec(bool value) {
+    return false;
+}
 
-} } // namespace dbglog { namespace detail {
+bool logger_file::write_file(const char *data, std::size_t left) {
+    return false;
+}
 
-#endif // __WIN32__
+} // namespace dbglog
 
-#endif // dbglog_detail_win32_hpp_included_

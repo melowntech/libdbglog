@@ -33,11 +33,21 @@
 #include <boost/noncopyable.hpp>
 #include <boost/thread.hpp>
 
+#ifndef _WIN32
 #include <sys/types.h>
+#include <unistd.h>
+#endif
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <unistd.h>
 #include <cerrno>
+
+#ifdef _WIN32
+typedef int mode_t;
+typedef int uid_t;
+typedef int gid_t;
+#define S_IRUSR _S_IREAD
+#define S_IWUSR _S_IWRITE
+#endif // _WIN32
 
 // implement TEMP_FAILURE_RETRY if not present on platform (via C++11 lambda)
 #ifndef TEMP_FAILURE_RETRY
@@ -76,7 +86,9 @@ public:
     bool closeOnExec(bool value);
 
 protected:
-    bool write_file(const std::string &line);
+    bool write_file(const std::string &line) {
+        return write_file(line.data(), line.size());
+    }
 
     bool write_file(const char *data, size_t left);
 
