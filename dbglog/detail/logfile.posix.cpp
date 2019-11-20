@@ -157,10 +157,6 @@ bool logger_file::closeOnExec(bool value)
     return true;
 }
 
-bool logger_file::write_file(const std::string &line) {
-    return write_file(line.data(), line.size());
-}
-
 bool logger_file::write_file(const char *data, size_t left) {
     if (!use_file_) {
         return false;
