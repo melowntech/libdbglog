@@ -35,7 +35,7 @@ logger_file::~logger_file()
 {}
 
 bool logger_file::log_file(const std::string &filename
-    , int mode) {
+    , ::mode_t mode) {
     return false;
 }
 
@@ -48,11 +48,11 @@ bool logger_file::tie(int fd, bool remember) {
 }
 
 bool logger_file::untie(int fd, const std::string &path
-    , int mode) {
+    , ::mode_t mode) {
     return false;
 }
 
-bool logger_file::log_file_owner(int owner, int group) {
+bool logger_file::log_file_owner(uid_t owner, gid_t group) {
     return false;
 }
 
