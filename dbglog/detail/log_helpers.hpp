@@ -35,6 +35,7 @@
 #include <boost/lexical_cast.hpp>
 
 #include <atomic>
+#include <memory>
 
 #include "time.hpp"
 #include "system.hpp"
@@ -86,8 +87,13 @@ public:
     }
 
 private:
+#ifdef __EMSCRIPTEN__
+    static thread_local std::unique_ptr<std::string> holder_;
+    static std::atomic_uint32_t generator_;
+#else
     static boost::thread_specific_ptr<std::string> holder_;
     static std::atomic_uint_fast64_t generator_;
+#endif
 };
 
 } // namespace detail

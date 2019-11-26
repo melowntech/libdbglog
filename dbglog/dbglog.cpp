@@ -32,15 +32,20 @@ const std::string logger::empty_;
 
 namespace detail {
 
-#if defined(__GNUC__) && ! defined(__clang__)
+#if defined(__GNUC__)
 #    define INIT_PRIORITY(PRIORITY) \
     __attribute__ ((init_priority (PRIORITY)))
 #else
 #    define INIT_PRIORITY(PRIORITY)
 #endif
 
+#ifdef __EMSCRIPTEN__
+thread_local std::unique_ptr<std::string> thread_id::holder_ INIT_PRIORITY(101);
+std::atomic_uint32_t thread_id::generator_ INIT_PRIORITY(101);
+#else
 boost::thread_specific_ptr<std::string> thread_id::holder_ INIT_PRIORITY(101);
 std::atomic_uint_fast64_t thread_id::generator_ INIT_PRIORITY(101)(0);
+#endif
 
 logger deflog INIT_PRIORITY(101)(default_);
 
