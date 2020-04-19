@@ -23,10 +23,11 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
 #ifndef shared_dbglog_config_hpp_included_
 #define shared_dbglog_config_hpp_included_
 
-#include <dbglog/level.hpp>
+#include "level.hpp"
 
 #endif // shared_dbglog_config_hpp_included_
 

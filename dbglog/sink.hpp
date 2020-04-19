@@ -23,6 +23,7 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
 #ifndef shared_dbglog_sink_hpp_included_
 #define shared_dbglog_sink_hpp_included_
 
@@ -32,7 +33,7 @@
 #include <boost/noncopyable.hpp>
 #include <boost/shared_ptr.hpp>
 
-#include <dbglog/level.hpp>
+#include "level.hpp"
 
 namespace dbglog {
 

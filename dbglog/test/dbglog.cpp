@@ -28,8 +28,8 @@
 #include <iostream>
 #include <stdexcept>
 
-#include <dbglog/dbglog.hpp>
-#include <dbglog/mask.hpp>
+#include "dbglog/dbglog.hpp"
+#include "dbglog/mask.hpp"
 
 void once() {
     LOGONCE(info4) << "once";

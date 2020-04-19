@@ -23,10 +23,11 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
 #ifndef shared_dbglog_detail_logger_hpp_included_
 #define shared_dbglog_detail_logger_hpp_included_
 
-#include <dbglog/logger.hpp>
+#include "../logger.hpp"
 
 namespace dbglog { namespace detail {
 

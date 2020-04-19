@@ -26,8 +26,8 @@
 #ifndef shared_dbglog_detail_log_helpers_hpp_included_
 #define shared_dbglog_detail_log_helpers_hpp_included_
 
-#include <dbglog/level.hpp>
-#include <dbglog/location.hpp>
+#include "../level.hpp"
+#include "../location.hpp"
 
 #include <errno.h>
 

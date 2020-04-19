@@ -23,8 +23,9 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#include <dbglog/mask.hpp>
-#include <dbglog/level.hpp>
+
+#include "mask.hpp"
+#include "level.hpp"
 
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/qi_as.hpp>

@@ -23,8 +23,9 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-#include <dbglog/detail/log_helpers.hpp>
-#include <dbglog/detail/logger.hpp>
+
+#include "detail/log_helpers.hpp"
+#include "detail/logger.hpp"
 
 namespace dbglog {
 
@@ -59,6 +60,11 @@ void thread_id(const std::string &id)
 std::string thread_id()
 {
     return detail::thread_id::get();
+}
+
+int process_id()
+{
+    return detail::processId();
 }
 
 } // namespace dbglog

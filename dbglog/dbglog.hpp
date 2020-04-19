@@ -26,10 +26,10 @@
 #ifndef shared_dbglog_dbglog_hpp_included_
 #define shared_dbglog_dbglog_hpp_included_
 
-#include <dbglog/logger.hpp>
-#include <dbglog/stream.hpp>
-#include <dbglog/config.hpp>
-#include <dbglog/mask.hpp>
+#include "logger.hpp"
+#include "stream.hpp"
+#include "config.hpp"
+#include "mask.hpp"
 
 namespace dbglog {
     const unsigned short millis(3);
@@ -156,7 +156,7 @@ namespace dbglog {
         detail::deflog.addSink(sink);
     }
 
-    /** Thread safety: none.
+     /** Thread safety: none.
      */
     inline void clear_sinks() {
         detail::deflog.clearSinks();
@@ -191,6 +191,10 @@ namespace dbglog {
     inline const std::string& log_line_prefix() {
         return detail::deflog.get_prefix();
     }
+
+   /** System-independent current process ID getter.
+    */
+    int process_id();
 
 } // namespace dbglog
 
