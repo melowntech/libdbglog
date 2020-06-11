@@ -42,7 +42,7 @@ namespace detail {
 
 #ifdef __EMSCRIPTEN__
 thread_local std::unique_ptr<std::string> thread_id::holder_ INIT_PRIORITY(101);
-std::atomic_uint32_t thread_id::generator_ INIT_PRIORITY(101);
+std::uint32_t thread_id::generator_;
 #else
 boost::thread_specific_ptr<std::string> thread_id::holder_ INIT_PRIORITY(101);
 std::atomic_uint_fast64_t thread_id::generator_ INIT_PRIORITY(101)(0);
