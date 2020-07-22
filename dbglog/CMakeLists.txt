@@ -1,5 +1,5 @@
 # bump version here
-set(dbglog_VERSION 1.5)
+set(dbglog_VERSION 1.6)
 
 define_module(LIBRARY dbglog=${dbglog_VERSION}
   DEPENDS Boost_THREAD Boost_SYSTEM)
