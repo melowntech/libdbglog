@@ -29,9 +29,10 @@
 
 #include <string>
 #include <vector>
+#include <utility>
+#include <memory>
 
 #include <boost/noncopyable.hpp>
-#include <boost/shared_ptr.hpp>
 
 #include "level.hpp"
 
@@ -39,7 +40,7 @@ namespace dbglog {
 
 class Sink : boost::noncopyable {
 public:
-    typedef boost::shared_ptr<Sink> pointer;
+    typedef std::shared_ptr<Sink> pointer;
 
     typedef std::vector<pointer> list;
 
@@ -70,6 +71,13 @@ public:
     bool shared_mask() const { return shared_mask_; }
 
     void shared_mask(bool v) { shared_mask_ = v; }
+
+    /** Helper for appopriate pointer type creator.
+     */
+    template <typename SinkT, typename ...Args>
+    static std::shared_ptr<SinkT> create(Args &&...args) {
+        return std::make_shared<SinkT>(std::forward<Args>(args)...);
+    }
 
 private:
     bool shared_mask_;
