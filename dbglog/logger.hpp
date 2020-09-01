@@ -71,6 +71,13 @@ public:
     }
 
     // NB: not threads safe; this must be done before any new thread is created!
+    void removeSink(const Sink::pointer &sink) {
+        // try to remove given sink
+        sinks_.erase(std::remove(sinks_.begin(), sinks_.end(), sink)
+                     , sinks_.end());
+    }
+
+    // NB: not threads safe; this must be done before any new thread is created!
     void clearSinks() {
         sinks_.clear();
     }

@@ -156,6 +156,12 @@ namespace dbglog {
         detail::deflog.addSink(sink);
     }
 
+/** Thread safety: none.
+     */
+    inline void remove_sink(const Sink::pointer &sink) {
+        detail::deflog.removeSink(sink);
+    }
+
      /** Thread safety: none.
      */
     inline void clear_sinks() {
