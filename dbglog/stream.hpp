@@ -110,7 +110,7 @@ public:
     ~exc_stream() noexcept(false) {
         sink_.log(l_, os_.str(), loc_);
         os_ << " @" << loc_;
-        if (!std::uncaught_exception()) {
+        if (!std::uncaught_exceptions()) {
             throw ExcType(os_.str());
         }
     }
