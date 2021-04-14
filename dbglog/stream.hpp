@@ -110,7 +110,11 @@ public:
     ~exc_stream() noexcept(false) {
         sink_.log(l_, os_.str(), loc_);
         os_ << " @" << loc_;
+#if __cplusplus < 201703L
+        if (!std::uncaught_exception()) {
+#else
         if (!std::uncaught_exceptions()) {
+#endif
             throw ExcType(os_.str());
         }
     }
