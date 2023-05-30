@@ -38,41 +38,52 @@ char* format_time(timebuffer &b, unsigned short precision)
     gettimeofday(&now, 0x0);
     tm now_bd;
     localtime_r(&now.tv_sec, &now_bd);
-    auto end(b + strftime(b, sizeof(b) - 1, "%Y-%m-%d %T", &now_bd));
 
-    // append
+    auto left(sizeof(b) - 1);
+    auto written(strftime(b, left, "%Y-%m-%d %T", &now_bd));
+    // NB: written == 0 if buffer was too short; should not happen
+    auto end(b + written);
+    left -= written;
+
+    // append sub-second fraction; snprintf writes up tu left characters
+    // including final NUL
     switch (precision) {
     case 0: break;
 
     case 1:
-        sprintf(end, ".%01u"
-                , static_cast<unsigned int>(now.tv_usec / 100000));
+        snprintf(end, left, ".%01u"
+                 , static_cast<unsigned int>(now.tv_usec / 100000));
         break;
 
     case 2:
-        sprintf(end, ".%02u"
-                , static_cast<unsigned int>(now.tv_usec / 10000));
+        snprintf(end, left, ".%02u"
+                 , static_cast<unsigned int>(now.tv_usec / 10000));
         break;
 
     case 3:
-        sprintf(end, ".%03u"
-                , static_cast<unsigned int>(now.tv_usec / 1000));
+        snprintf(end, left, ".%03u"
+                 , static_cast<unsigned int>(now.tv_usec / 1000));
         break;
 
     case 4:
-        sprintf(end, ".%04u"
-                , static_cast<unsigned int>(now.tv_usec / 100));
+        snprintf(end, left, ".%04u"
+                 , static_cast<unsigned int>(now.tv_usec / 100));
         break;
 
     case 5:
-        sprintf(end, ".%05u", static_cast<unsigned int>(now.tv_usec / 10));
+        snprintf(end, left, ".%05u"
+                 , static_cast<unsigned int>(now.tv_usec / 10));
         break;
 
     default:
         // 6 and more
-        sprintf(end, ".%06u", static_cast<unsigned int>(now.tv_usec));
+        snprintf(end, left, ".%06u"
+                 , static_cast<unsigned int>(now.tv_usec));
         break;
     }
+
+    // enforce final NUL even if snprintf truncated output (should not happen)
+    end[left] = '\0';
 
     return b;
 }

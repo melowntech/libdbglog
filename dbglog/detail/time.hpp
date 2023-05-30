@@ -29,6 +29,10 @@
 
 namespace dbglog { namespace detail {
 
+/** Time buffer for formatting date time[.subsecs]
+ *  64 bytes is more than enough, since the format take 27 chars at most:
+ *      "YYYY-MM-DD HH:MM:SS.ssssss\0"
+ */
 typedef char timebuffer[64];
 
 char* format_time(timebuffer &b, unsigned short precision = 0);
