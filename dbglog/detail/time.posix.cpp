@@ -45,7 +45,7 @@ char* format_time(timebuffer &b, unsigned short precision)
     auto end(b + written);
     left -= written;
 
-    // append sub-second fraction; snprintf writes up tu left characters
+    // append sub-second fraction; snprintf writes up to left characters
     // including final NUL
     switch (precision) {
     case 0: break;
